@@ -1,0 +1,138 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\json">
+      <UniqueIdentifier>{207f2d8e-2ba7-44c1-90c1-a4bccea7bcf4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\json\parser">
+      <UniqueIdentifier>{423b257d-ece4-4f22-b514-d0b70b7a96ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\json">
+      <UniqueIdentifier>{a7b97882-2fa6-4a40-900d-db68fd5134c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\json\parser">
+      <UniqueIdentifier>{c15fcb41-3702-486b-86e3-f99d5db7ca50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\json\objects">
+      <UniqueIdentifier>{1509da95-f46f-47cb-9875-1b0cfa0f14ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\json\exception">
+      <UniqueIdentifier>{7eece4fe-eb49-499b-bb0b-360a26adb96b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="tests.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="json\objects\BaseObject.h">
+      <Filter>Header Files\json\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="json\Position.h">
+      <Filter>Header Files\json</Filter>
+    </ClInclude>
+    <ClInclude Include="json\exception\Exception.h">
+      <Filter>Header Files\json\exception</Filter>
+    </ClInclude>
+    <ClInclude Include="json\exception\InvalidToken.h">
+      <Filter>Header Files\json\exception</Filter>
+    </ClInclude>
+    <ClInclude Include="json\parser\Token.h">
+      <Filter>Header Files\json\parser</Filter>
+    </ClInclude>
+    <ClInclude Include="json\exception\InvalidCharacter.h">
+      <Filter>Header Files\json\exception</Filter>
+    </ClInclude>
+    <ClInclude Include="json\exception\UnsupportedFeature.h">
+      <Filter>Header Files\json\exception</Filter>
+    </ClInclude>
+    <ClInclude Include="json\exception\NoMemory.h">
+      <Filter>Header Files\json\exception</Filter>
+    </ClInclude>
+    <ClInclude Include="json\exception\EndOfFile.h">
+      <Filter>Header Files\json\exception</Filter>
+    </ClInclude>
+    <ClInclude Include="json\exceptions.h">
+      <Filter>Header Files\json</Filter>
+    </ClInclude>
+    <ClInclude Include="json\objects\Bool.h">
+      <Filter>Header Files\json\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="json\objects\Type.h">
+      <Filter>Header Files\json\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="json\objects\Null.h">
+      <Filter>Header Files\json\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="json\objects\Integer.h">
+      <Filter>Header Files\json\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="json\objects\Array.h">
+      <Filter>Header Files\json\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="json\exception\InternalError.h">
+      <Filter>Header Files\json\exception</Filter>
+    </ClInclude>
+    <ClInclude Include="json\objects\Object.h">
+      <Filter>Header Files\json\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="json\objects\RealNumber.h">
+      <Filter>Header Files\json\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="json\objects.h">
+      <Filter>Header Files\json</Filter>
+    </ClInclude>
+    <ClInclude Include="json\objects\String.h">
+      <Filter>Header Files\json\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="json\parser\InputBuffer.h">
+      <Filter>Header Files\json\parser</Filter>
+    </ClInclude>
+    <ClInclude Include="json\parser\Parser.h">
+      <Filter>Header Files\json\parser</Filter>
+    </ClInclude>
+    <ClInclude Include="json\parser\Tokenizer.h">
+      <Filter>Header Files\json\parser</Filter>
+    </ClInclude>
+    <ClInclude Include="json\json.h">
+      <Filter>Header Files\json</Filter>
+    </ClInclude>
+    <ClInclude Include="json\Unicode.h">
+      <Filter>Header Files\json</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="tests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="json\parser\Token.cpp">
+      <Filter>Source Files\json\parser</Filter>
+    </ClCompile>
+    <ClCompile Include="json\parser\Parser.cpp">
+      <Filter>Source Files\json\parser</Filter>
+    </ClCompile>
+    <ClCompile Include="json\parser\Tokenizer.cpp">
+      <Filter>Source Files\json\parser</Filter>
+    </ClCompile>
+    <ClCompile Include="json\json.cpp">
+      <Filter>Source Files\json</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Readme.txt" />
+  </ItemGroup>
+</Project>
