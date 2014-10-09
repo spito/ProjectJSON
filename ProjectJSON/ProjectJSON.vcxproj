@@ -12,7 +12,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{13D43F33-F99C-45D7-B6C1-F33C17B7A6D7}</ProjectGuid>
-    <RootNamespace>project_json</RootNamespace>
+    <RootNamespace>ProjectJSON</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
