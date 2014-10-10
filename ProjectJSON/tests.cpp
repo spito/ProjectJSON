@@ -85,8 +85,9 @@ namespace test {
             testCase( "\"tralala\"", Token( t, "tralala" ) );
             testCase( "\"\\n\"", Token( t, "\n" ) );
             testCase( "\"\\t\"", Token( t, "\t" ) );
+            testCase( "\" \"", Token( t, " " ) );
             //testCase( "\"\\u00FD\"", Token( t, "\u00fd" ) );
-            testCase( "\"true\"true", std::vector<Token>{
+            testCase( "\"true\"true", std::vector< Token >{
                 Token( t, "true" ),
                 Token( Token::Type::True, "true", Position( 6, 1, 7 ) )
             } );
