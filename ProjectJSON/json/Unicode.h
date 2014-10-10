@@ -7,7 +7,38 @@ namespace json {
     class Unicode {
     public:
         using uchar = unsigned char;
-        
+    
+        static std::string transform( const std::string &value ) {
+            std::string result;
+            for ( char c : value ) {
+                switch ( c ) {
+                case '"':
+                case '\\':
+                    result += '\\';
+                    result += c;
+                    break;
+                case '\b':
+                    result += "\\b";
+                    break;
+                case '\f':
+                    result += "\\f";
+                    break;
+                case '\n':
+                    result += "\\n";
+                    break;
+                case '\r':
+                    result += "\\r";
+                    break;
+                case '\t':
+                    result += "\\t";
+                    break;
+                default:
+                    result += c;
+                }
+            }
+            return result;
+        }
+
         static bool fromHexToChar( char higher, char lower, char &out ) {
 
             uchar hi;

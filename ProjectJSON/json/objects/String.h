@@ -1,6 +1,7 @@
 #pragma once
 
 #include "BaseObject.h"
+#include "../Unicode.h"
 
 #include <string>
 
@@ -26,9 +27,8 @@ namespace json {
                 return *this;
             }
 
-            /// TODO: rewrite
             std::string toString() const override {
-                return value();
+                return '"' + Unicode::transform( value() ) + '"';
             }
 
             std::string &value() {
