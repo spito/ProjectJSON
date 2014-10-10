@@ -141,4 +141,7 @@
   <ItemGroup>
     <Text Include="Readme.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="test1.json" />
+  </ItemGroup>
 </Project>

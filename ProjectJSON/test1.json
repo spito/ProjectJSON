@@ -1,0 +1,11 @@
+{
+    "prop1": [ 3.14, 10, 42, "test" ],
+    "prop2": {
+        "a": 10,
+        "b": 14,
+        "c": true,
+        "d": null,
+        "e": false
+    },
+    "prop3": "pro\tp3"
+}
