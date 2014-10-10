@@ -24,15 +24,15 @@ namespace json {
                 _expected.emplace_back( std::move( expected ) );
             }
 
-            const parser::Token &given() const {
+            const parser::Token &given() const JSON_NOEXCEPT {
                 return _given;
             }
 
-            const Position &position() const override {
+            const Position &position() const JSON_NOEXCEPT override{
                 return _given.position();
             }
 
-            const std::vector< parser::Token::Type > &expected() const {
+            const std::vector< parser::Token::Type > &expected() const JSON_NOEXCEPT {
                 return _expected;
             }
         };

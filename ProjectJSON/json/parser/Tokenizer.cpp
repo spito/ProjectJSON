@@ -5,6 +5,7 @@
 
 #include <string>
 #include <sstream>
+#include <cstring>
 
 namespace json {
     namespace parser {
@@ -94,7 +95,7 @@ namespace json {
         void Tokenizer::processWord( Token::Type type, Token &token ) {
 
             const char *string = Token::value( type );
-            size_t size = strlen( string );
+            size_t size = std::strlen( string );
 
             Position before = position();
 

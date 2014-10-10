@@ -14,13 +14,13 @@ namespace test {
     struct Test {
 
 
-        bool reportProblem( const std::string &, Token &, Token & );
-        bool reportProblem( Exception & );
+        bool reportProblem( const std::string &, const Token &, const Token & );
+        bool reportProblem( const Exception & );
 
         void tokenizer();
 
-        Token testCase( std::string, Token & );
-        bool testCase( std::string, std::vector< Token > & );
+        Token testCase( std::string, const Token & );
+        bool testCase( std::string, const std::vector< Token > & );
         bool testCase( std::string, Exception & );
     };
 

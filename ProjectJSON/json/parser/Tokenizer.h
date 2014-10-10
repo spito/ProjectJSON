@@ -22,11 +22,6 @@ namespace json {
             // if return value is false => reading do not change the buffer
             bool isTokenType( Token::Type, Token & );
 
-            bool Tokenizer::isTokenType( Token::Type type ) {
-                Token token;
-                return isTokenType( type, token );
-            }
-
             // destroying
             void readToken( Token & );
 

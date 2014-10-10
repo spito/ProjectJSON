@@ -4,6 +4,12 @@
 
 #include <stdexcept>
 
+#ifdef _MSC_VER
+#define JSON_NOEXCEPT
+#else
+#define JSON_NOEXCEPT noexcept
+#endif
+
 namespace json {
     namespace exception {
 
@@ -14,7 +20,7 @@ namespace json {
             {}
         public:
             virtual ~Exception(){}
-            virtual const Position &position() const = 0;
+            virtual const Position &position() const JSON_NOEXCEPT = 0;
         };
     }
 }

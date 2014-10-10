@@ -3,6 +3,7 @@
 #include "../Position.h"
 
 #include <string>
+#include <iostream>
 
 namespace json {
     namespace parser {

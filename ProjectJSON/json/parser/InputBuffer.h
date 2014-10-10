@@ -4,6 +4,7 @@
 #include <string>
 #include <fstream>
 #include <cctype>
+#include <iterator>
 
 #include "../Position.h"
 
@@ -35,7 +36,7 @@ namespace json {
             void readJson( const std::string &json ) {
                 _size = json.size();
                 _buffer.reset( new char[ _size ] );
-                _position = Position();
+                _position.reset();
 
                 std::copy( json.begin(), json.end(), _buffer.get() );
             }

@@ -17,7 +17,7 @@ namespace json {
         class Parser {
 
             Tokenizer _tokenizer;
-            static const int limitRecursionDepth = 1000;
+            static const int limitRecursionDepth;
             const int _maximalDepth;
 
         public:
@@ -41,7 +41,7 @@ namespace json {
 
             objects::Handle getTree();
 
-            const Position &position() const {
+            Position position() const {
                 return _tokenizer.position();
             }
         private:

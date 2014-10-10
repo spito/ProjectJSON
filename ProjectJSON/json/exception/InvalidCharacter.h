@@ -43,13 +43,13 @@ namespace json {
                 InvalidCharacter( given, "", std::move( p ) )
             {}
 
-            virtual const std::string &given() const {
+            virtual const std::string &given() const JSON_NOEXCEPT {
                 return _given;
             }
-            virtual const std::string &expected() const {
+            virtual const std::string &expected() const JSON_NOEXCEPT {
                 return _expected;
             }
-            const Position &position() const override {
+                const Position &position() const JSON_NOEXCEPT override{
                 return _position;
             }
         };

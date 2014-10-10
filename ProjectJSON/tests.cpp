@@ -7,8 +7,12 @@
 
 namespace test {
 
+    template< typename T >
+    T abs( T value ) {
+        return value < 0 ? value * -1 : value;
+    }
 
-    Token Test::testCase( std::string json, Token &expected ) {
+    Token Test::testCase( std::string json, const Token &expected ) {
         
         auto tokenizer = ::json::parser::Tokenizer( json );
 
@@ -24,7 +28,7 @@ namespace test {
         return token;
     }
 
-    bool Test::testCase( std::string json, std::vector< Token > &tokens ) {
+    bool Test::testCase( std::string json, const std::vector< Token > &tokens ) {
 
         auto tokenizer = ::json::parser::Tokenizer( json );
         Token token;
@@ -47,7 +51,7 @@ namespace test {
         return false;
     }
 
-    bool Test::reportProblem( const std::string &json, Token &given, Token &expected ) {
+    bool Test::reportProblem( const std::string &json, const Token &given, const Token &expected ) {
 
         std::cerr << "json: " << std::endl <<
             '\t' << json << std::endl << std::endl <<
@@ -137,7 +141,7 @@ namespace test {
                 "]; expected 0.0" << std::endl;
 
             token = testCase( "1e-1", Token( t, "1e-1" ) );
-            if ( token.real() != 0.1 )
+            if ( abs( token.real() - 0.1 ) > 1e-6 )
                 std::cerr << "invalid number, got [" << token.real() <<
                 "]; expected 0.1" << std::endl;
 

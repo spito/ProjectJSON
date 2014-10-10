@@ -1,6 +1,7 @@
 #pragma once
 
 #include <utility>
+#include <cstddef>
 
 namespace json {
 
@@ -26,6 +27,12 @@ namespace json {
                 _line( o._line ),
                 _column( o._column )
             {}
+
+            Position &operator=( Position p ) {
+                swap( p );
+                return *this;
+            }
+
 #ifndef JSON_TEST
         private:
 #endif
@@ -34,7 +41,9 @@ namespace json {
                 _line( l ),
                 _column( r )
             {}
+
         public:
+
             void nextLine() {
                 ++_rawPosition;
                 _column = 1;
@@ -59,8 +68,8 @@ namespace json {
 
             void reset() {
                 _rawPosition = 0;
-                _line = 0;
-                _column = 0;
+                _line = 1;
+                _column = 1;
             }
 
             void swap( Position &p ) {

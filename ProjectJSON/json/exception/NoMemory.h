@@ -13,7 +13,7 @@ namespace json {
                 _position( std::move( p ) )
             {}
 
-            const Position &position() const override {
+            const Position &position() const JSON_NOEXCEPT override {
                 return _position;
             }
         };

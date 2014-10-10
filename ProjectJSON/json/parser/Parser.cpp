@@ -3,6 +3,8 @@
 namespace json {
     namespace parser {
 
+        const int Parser::limitRecursionDepth = 1000;
+
         void Parser::checkDepth( int depth ) {
             if ( depth >= _maximalDepth )
                 throw exception::InternalError( "stack limit", position() );

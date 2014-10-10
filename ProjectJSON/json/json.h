@@ -29,3 +29,7 @@ namespace json {
         void errorMessage( const exception::Exception &, Given, Expected );
     };
 }
+
+#ifdef JSON_NOEXCEPT
+#undef JSON_NOEXCEPT
+#endif
