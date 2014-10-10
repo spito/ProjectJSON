@@ -83,7 +83,7 @@ namespace json {
 }
 namespace std {
     template<>
-    static void swap( ::json::Position &lhs, ::json::Position &rhs ) {
+    inline void swap( ::json::Position &lhs, ::json::Position &rhs ) {
         lhs.swap( rhs );
     }
 }

@@ -200,7 +200,7 @@ namespace json {
 
 namespace std {
     template<>
-    static void swap( ::json::parser::Token &lhs, ::json::parser::Token &rhs ) {
+    inline void swap( ::json::parser::Token &lhs, ::json::parser::Token &rhs ) {
         lhs.swap( rhs );
     }
 }
