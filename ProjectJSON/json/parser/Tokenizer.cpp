@@ -1,6 +1,7 @@
 
 #include "Tokenizer.h"
 #include "../exceptions.h"
+#include "NumberParser.h"
 
 #include <string>
 #include <sstream>
@@ -243,216 +244,20 @@ namespace json {
         }
 
         // TODO: check needed
-        // TODO: refactoring needed
         void Tokenizer::processNumber( Token &token ) {
 
-            enum class States {
-                Init,
-                Minus,
-                Zero,
-                Digits,
-                Point,
-                DecimalDigits,
-                E,
-                EPlusMinus,
-                EDigits
-            };
-
-            bool isReal = false;
-            bool isMinus = false;
-            bool isE = false;
-            bool isExponentMinus = false;
-            bool quit = false;
-            States state = States::Init;
-            double denominator = 10.0;
-
-            std::string rawToken;
             Position before = position();
-            long long exponent = 0;
-            long long integer = 0;
-            long double real = 0.0;
+            NumberParser p( _input );
 
-            while ( !quit ) {
+            p.run();
 
-                char c = _input.read();
-                switch ( state ) {
-                case States::Init:
-                    if ( c == '-' ) {
-                        isMinus = true;
-                        state = States::Minus;
-                        rawToken.push_back( c );
-                    }
-                    else if ( c == '0' ) {
-                        state = States::Zero;
-                        rawToken.push_back( c );
-                    }
-                    else if ( std::isdigit( c ) ) {
-                        state = States::Digits;
-                        integer = c - '0';
-                        rawToken.push_back( c );
-                    }
-                    else {
-                        throw exception::InvalidCharacter( c, "-0123456789", position() );
-                    }
-                    break;
-                case States::Minus:
-                    if ( c == '0' ) {
-                        state = States::Zero;
-                        rawToken.push_back( c );
-                    }
-                    else if ( std::isdigit( c ) ) {
-                        state = States::Digits;
-                        integer = c - '0';
-                        rawToken.push_back( c );
-                    }
-                    else {
-                        throw exception::InvalidCharacter( c, "0123456789", position() );
-                    }
-                    break;
-                case States::Digits:
-                    if ( std::isdigit( c ) ) {
-                        rawToken.push_back( c );
-                        integer *= 10;
-                        integer += c - '0';
-                        break;
-                    }
-                    // fall down
-                case States::Zero:
-                    if ( c == '.' ) {
-                        state = States::Point;
-                        isReal = true;
-                        real = static_cast<long double>( integer );
-                        rawToken.push_back( c );
-                    }
-                    else if ( c == 'e' || c == 'E' ) {
-                        state = States::E;
-                        isE = true;
-                        rawToken.push_back( c );
-                    }
-                    else {
-                        quit = true;
-                    }
-                    break;
-                case States::Point:
-                    if ( std::isdigit( c ) ) {
-                        state = States::DecimalDigits;
-                        real += ( c - '0' ) / denominator;
-                        denominator *= 10;
-                        rawToken.push_back( c );
-                    }
-                    else {
-                        throw exception::InvalidCharacter( c, "0123456789", position() );
-                    }
-                    break;
-                case States::DecimalDigits:
-                    if ( std::isdigit( c ) ) {
-                        real += ( c - '0' ) / denominator;
-                        denominator *= 10;
-                        rawToken.push_back( c );
-                    }
-                    else if ( c == 'e' || c == 'E' ) {
-                        state = States::E;
-                        isE = true;
-                        rawToken.push_back( c );
-                    }
-                    else {
-                        quit = true;
-                    }
-                    break;
-                case States::E:
-                    if ( c == '-' ) {
-                        isExponentMinus = true;
-                        state = States::EPlusMinus;
-                        rawToken.push_back( c );
-                    }
-                    else if ( c == '+' ) {
-                        state = States::EPlusMinus;
-                        rawToken.push_back( c );
-                    }
-                    else if ( std::isdigit( c ) ) {
-                        state = States::EDigits;
-                        exponent *= 10;
-                        exponent += c - '0';
-                        rawToken.push_back( c );
-                    }
-                    else {
-                        throw exception::InvalidCharacter( c, "+-0123456789", position() );
-                    }
-                    break;
-                case States::EPlusMinus:
-                    if ( std::isdigit( c ) ) {
-                        state = States::EDigits;
-                        exponent *= 10;
-                        exponent += c - '0';
-                        rawToken.push_back( c );
-                    }
-                    else {
-                        throw exception::InvalidCharacter( c, "0123456789", position() );
-                    }
-                    break;
-                case States::EDigits:
-                    if ( std::isdigit( c ) ) {
-                        exponent *= 10;
-                        exponent += c - '0';
-                        rawToken.push_back( c );
-                    }
-                    else {
-                        quit = true;
-                    }
-                    break;
-                }
-            }
-
-            if ( isE ) {
-                if ( !isReal ) {
-                    // try to remain number as an integer
-                    if ( isExponentMinus ) {
-                        auto ex = exponent;
-                        while ( ex ) {
-                            // reduction is possible
-                            if ( integer % 10 == 0 ) {
-                                integer /= 10;
-                                --ex;
-                            }
-                            else
-                                break;
-                        }
-                        if ( ex ) {
-                            real = static_cast<long double>( integer );
-                            isReal = true;
-                        }
-                    }
-                    else {
-                        while ( exponent ) {
-                            integer *= 10;
-                            --exponent;
-                        }
-                    }
-                }
-                // not else!
-                if ( isReal ) {
-                    void( *op )( long double & ) = []( long double &r ) { r *= 10; };
-                    if ( isExponentMinus )
-                        op = []( long double &r ) { r /= 10; };
-
-                    while ( exponent ) {
-                        op( real );
-                        --exponent;
-                    }
-                }
-            }
-
-            if ( isReal ) {
-                token = Token( Token::Type::RealNumber, rawToken, before );
-                if ( isMinus )
-                    real *= -1;
-                token.real() = real;
+            if ( p.isReal() ) {
+                token = Token( Token::Type::RealNumber, p.token(), before );
+                token.real() = p.real();
             }
             else {
-                token = Token( Token::Type::Integer, rawToken, before );
-                if ( isMinus )
-                    integer *= -1;
-                token.integer() = integer;
+                token = Token( Token::Type::Integer, p.token(), before );
+                token.integer() = p.integer();
             }
         }
     }
