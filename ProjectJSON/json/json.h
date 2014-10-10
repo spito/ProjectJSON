@@ -10,6 +10,8 @@
 
 namespace json {
 
+    using Handle = objects::Handle;
+
     class Factory {
         std::ostream &_out;
     public:
@@ -17,11 +19,11 @@ namespace json {
             _out( out )
         {}
 
-        objects::Handle parseJson( const std::string & );
-        objects::Handle parseFile( const std::string & );
-        objects::Handle parseFile( std::ifstream & );
+        Handle parseJson( const std::string & );
+        Handle parseFile( const std::string & );
+        Handle parseFile( std::ifstream & );
     private:
-        objects::Handle invokeParsing( parser::Parser & );
+        Handle invokeParsing( parser::Parser & );
 
         void errorMessage( const exception::Exception & );
 

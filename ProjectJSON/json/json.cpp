@@ -28,27 +28,27 @@ namespace json {
     }
 
 
-    objects::Handle Factory::parseJson( const std::string &json ) {
+    Handle Factory::parseJson( const std::string &json ) {
         parser::Parser p( json );
 
         return invokeParsing( p );
     }
 
-    objects::Handle Factory::parseFile( const std::string &name ) {
+    Handle Factory::parseFile( const std::string &name ) {
         std::ifstream file( name.c_str() );
 
         return parseFile( file );
     }
     
-    objects::Handle Factory::parseFile( std::ifstream &file ) {
+    Handle Factory::parseFile( std::ifstream &file ) {
         parser::Parser p( file );
 
         return invokeParsing( p );
     }
     
-    objects::Handle Factory::invokeParsing( parser::Parser &p ) {
+    Handle Factory::invokeParsing( parser::Parser &p ) {
 
-        objects::Handle handle;
+        Handle handle;
 
         try {
             handle = p.getTree();
