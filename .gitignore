@@ -8,3 +8,5 @@
 *.tlog
 *.idb
 *.opensdf
+*.bsc
+*.sbr
