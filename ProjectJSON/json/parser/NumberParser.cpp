@@ -9,7 +9,9 @@ namespace json {
 
             bool quit = false;
             States state = States::Init;
+            Position before;
             while ( !quit ) {
+                before = _input.position();
                 char c = _input.readChar();
 
                 switch ( state ) {
@@ -40,13 +42,14 @@ namespace json {
                 case States::EDigits:
                     state = stateEDigits( c );
                     break;
-                case States::Quit:
-                    quit = true;
-                    break;
                 default:
                     break;
                 }
+                if ( state == States::Quit )
+                    break;
             }
+            _input.position( before );// return back the last character
+
             if ( _isE )
                 postProcessing();
             if ( _isMinus ) {
