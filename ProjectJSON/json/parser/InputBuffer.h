@@ -5,6 +5,7 @@
 #include <fstream>
 #include <cctype>
 #include <iterator>
+#include <iomanip>
 
 #include "../Position.h"
 
@@ -104,10 +105,12 @@ namespace json {
                 file.seekg( 0, std::ios::beg );
                 _buffer.reset( new char[ _size ] );
 
-                std::copy( std::istream_iterator<char>( file ),
+                file >> std::noskipws;
+
+                char *c = std::copy( std::istream_iterator<char>( file ),
                            std::istream_iterator<char>(),
                            _buffer.get() );
-
+                _size = size_t( c - _buffer.get() );
             }
         };
     }
