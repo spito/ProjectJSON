@@ -29,32 +29,30 @@ namespace json {
 
 
     Handle Factory::parseJson( const std::string &json ) {
-        parser::Parser p( json );
-
-        return invokeParsing( p );
+        return invokeParsing( json );
     }
 
     Handle Factory::parseFile( const std::string &name ) {
         std::ifstream file( name.c_str() );
 
-        return parseFile( file );
+        return invokeParsing( file );
     }
     
     Handle Factory::parseFile( std::ifstream &file ) {
-        parser::Parser p( file );
-
-        return invokeParsing( p );
+        return invokeParsing( file );
     }
     
-    Handle Factory::invokeParsing( parser::Parser &p ) {
+    template< typename T >
+    Handle Factory::invokeParsing( T &t ) {
 
         Handle handle;
-
+        std::unique_ptr< parser::Parser > p;
         try {
-            handle = p.getTree();
+            p.reset( new parser::Parser( t ) );
+            handle = p->getTree();
         }
         catch ( std::bad_alloc & ) {
-            errorMessage( exception::NoMemory( p.position() ) );
+            errorMessage( exception::NoMemory( p ? p->position() : Position() ) );
         }
         catch ( exception::InvalidCharacter &ex ) {
             errorMessage(

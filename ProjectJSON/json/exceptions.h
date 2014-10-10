@@ -6,3 +6,4 @@
 #include "exception/EndOfFile.h"
 #include "exception/NoMemory.h"
 #include "exception/UnsupportedFeature.h"
+#include "exception/InvalidFile.h"

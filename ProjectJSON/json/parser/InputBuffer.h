@@ -8,6 +8,7 @@
 #include <iomanip>
 
 #include "../Position.h"
+#include "../exceptions.h"
 
 namespace json {
     namespace parser {
@@ -100,6 +101,10 @@ namespace json {
         private:
 
             void readFile( std::ifstream &file ) {
+
+                if ( !file.good() )
+                    throw exception::InvalidFile();
+
                 file.seekg( 0, std::ios::end );
                 _size = size_t(file.tellg());
                 file.seekg( 0, std::ios::beg );

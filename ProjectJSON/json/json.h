@@ -23,7 +23,8 @@ namespace json {
         Handle parseFile( const std::string & );
         Handle parseFile( std::ifstream & );
     private:
-        Handle invokeParsing( parser::Parser & );
+        template< typename T >
+        Handle invokeParsing( T & );
 
         void errorMessage( const exception::Exception & );
 

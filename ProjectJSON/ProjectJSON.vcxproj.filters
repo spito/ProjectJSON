@@ -114,6 +114,9 @@
     <ClInclude Include="json\parser\NumberParser.h">
       <Filter>Header Files\json\parser</Filter>
     </ClInclude>
+    <ClInclude Include="json\exception\InvalidFile.h">
+      <Filter>Header Files\json\exception</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
