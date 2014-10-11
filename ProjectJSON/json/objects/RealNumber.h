@@ -11,7 +11,7 @@ namespace json {
             long double _value;
         public:
             RealNumber( long double d = 0.0 ) :
-                BaseObject( Type::Integer ),
+                BaseObject( Type::RealNumber ),
                 _value( d )
             {}
 
