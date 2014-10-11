@@ -100,6 +100,8 @@ namespace json {
                 case Type::RealNumber:
                     _number.real = o._number.real;
                     break;
+                default:
+                    break;
                 }
             }
 
