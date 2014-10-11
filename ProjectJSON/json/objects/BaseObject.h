@@ -24,6 +24,10 @@ namespace json {
                 return _type == o._type;
             }
 
+            Type type() const {
+                return _type;
+            }
+
             bool isNull() const {
                 return is( Type::Null );
             }

@@ -24,7 +24,7 @@ int main( int argc, char **argv ) {
             return -1;
 
         std::cout << "Dump of the JSON structure: " << std::endl;
-        std::cout << handle->toString() << std::endl;
+        std::cout << handle << std::endl;
     }
     return 0;
 }
