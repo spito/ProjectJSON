@@ -28,7 +28,7 @@ namespace json {
                 return _given;
             }
 
-            const Position &position() const JSON_NOEXCEPT override{
+            Position position() const JSON_NOEXCEPT override{
                 return _given.position();
             }
 

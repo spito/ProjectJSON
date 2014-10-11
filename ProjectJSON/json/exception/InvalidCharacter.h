@@ -49,7 +49,7 @@ namespace json {
             virtual const std::string &expected() const JSON_NOEXCEPT {
                 return _expected;
             }
-                const Position &position() const JSON_NOEXCEPT override{
+            Position position() const JSON_NOEXCEPT override {
                 return _position;
             }
         };

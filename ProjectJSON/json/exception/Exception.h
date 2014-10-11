@@ -20,7 +20,7 @@ namespace json {
             {}
         public:
             virtual ~Exception(){}
-            virtual const Position &position() const JSON_NOEXCEPT = 0;
+            virtual Position position() const JSON_NOEXCEPT = 0;
         };
     }
 }

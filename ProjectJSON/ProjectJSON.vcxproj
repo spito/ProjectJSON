@@ -77,7 +77,6 @@
     <ClInclude Include="json\exception\InvalidCharacter.h" />
     <ClInclude Include="json\exception\InvalidFile.h" />
     <ClInclude Include="json\exception\InvalidToken.h" />
-    <ClInclude Include="json\exception\NoMemory.h" />
     <ClInclude Include="json\exception\UnsupportedFeature.h" />
     <ClInclude Include="json\json.h" />
     <ClInclude Include="json\objects.h" />
@@ -90,6 +89,7 @@
     <ClInclude Include="json\objects\RealNumber.h" />
     <ClInclude Include="json\objects\String.h" />
     <ClInclude Include="json\objects\Type.h" />
+    <ClInclude Include="json\Output.h" />
     <ClInclude Include="json\parser\InputBuffer.h" />
     <ClInclude Include="json\parser\NumberParser.h" />
     <ClInclude Include="json\parser\Parser.h" />

@@ -19,7 +19,7 @@ namespace json {
                 _msg += msg;
             }
 
-            const Position &position() const JSON_NOEXCEPT override {
+            Position position() const JSON_NOEXCEPT override {
                 return _position;
             }
 

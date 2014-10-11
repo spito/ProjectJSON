@@ -57,9 +57,6 @@
     <ClInclude Include="json\exception\UnsupportedFeature.h">
       <Filter>Header Files\json\exception</Filter>
     </ClInclude>
-    <ClInclude Include="json\exception\NoMemory.h">
-      <Filter>Header Files\json\exception</Filter>
-    </ClInclude>
     <ClInclude Include="json\exception\EndOfFile.h">
       <Filter>Header Files\json\exception</Filter>
     </ClInclude>
@@ -116,6 +113,9 @@
     </ClInclude>
     <ClInclude Include="json\exception\InvalidFile.h">
       <Filter>Header Files\json\exception</Filter>
+    </ClInclude>
+    <ClInclude Include="json\Output.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

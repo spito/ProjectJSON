@@ -21,7 +21,7 @@ namespace json {
                 return _msg.c_str();
             }
 
-            const Position &position() const JSON_NOEXCEPT override {
+            Position position() const JSON_NOEXCEPT override {
                 return _position;
             }
         };

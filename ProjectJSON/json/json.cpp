@@ -5,16 +5,21 @@
 namespace json {
 
     void Factory::errorMessage( const exception::Exception &ex ) {
-        _out << "Line: " << ex.position().line() << ", column: " <<
-            ex.position().column() << "\tParse error: " << ex.what() <<
+        _out << "===[ Line: " << ex.position().line() << ", column: " <<
+            ex.position().column() << " ]===" << std::endl <<
+            "Parse error: " << ex.what() <<
             '.' << std::endl;
+    }
+
+    void Factory::errorMessage( const std::exception &ex ) {
+        _out << "Parse error: " << ex.what() << '.' << std::endl;
     }
 
     template< typename Given, typename Expected >
     void Factory::errorMessage( const exception::Exception &ex, Given given, Expected expected ) {
         errorMessage( ex );
 
-        _out << "\tExpected: ";
+        _out << "Expected: ";
 
         int i = 0;
         for ( auto item : expected ) {
@@ -46,13 +51,9 @@ namespace json {
     Handle Factory::invokeParsing( T &t ) {
 
         Handle handle;
-        std::unique_ptr< parser::Parser > p;
         try {
-            p.reset( new parser::Parser( t ) );
-            handle = p->getTree();
-        }
-        catch ( std::bad_alloc & ) {
-            errorMessage( exception::NoMemory( p ? p->position() : Position() ) );
+            parser::Parser p( t );
+            handle = p.getTree();
         }
         catch ( exception::InvalidCharacter &ex ) {
             errorMessage(
@@ -68,6 +69,9 @@ namespace json {
                 );
         }
         catch ( exception::Exception &ex ) {
+            errorMessage( ex );
+        }
+        catch ( std::exception &ex ) {
             errorMessage( ex );
         }
         catch ( ... ) {
