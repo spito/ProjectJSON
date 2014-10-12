@@ -95,18 +95,23 @@ namespace json {
         void Tokenizer::processWord( Token::Type type, Token &token ) {
 
             const char *string = Token::value( type );
-            size_t size = std::strlen( string );
 
             Position before = position();
+            std::string word;
 
-            for ( int i = 0; i < int(size); ++i ) {
+            while ( true ) {
                 Position p = position();
                 char given = _input.read();
-                if ( given != string[ i ] ) {
-                    throw exception::InvalidCharacter( given, string[ i ], p );
+                if ( !std::isalpha( given ) ) {
+                    _input.position( p );
+                    break;
                 }
+                word += given;
             }
-            token = Token( type, before );
+            if ( Token::value( type ) == word )
+                token = Token( type, before );
+            else
+                token = Token( Token::Type::Invalid, before );
         }
 
         // according to the documentation these characters are not allowed
