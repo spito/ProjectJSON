@@ -94,8 +94,6 @@ namespace json {
 
         void Tokenizer::processWord( Token::Type type, Token &token ) {
 
-            const char *string = Token::value( type );
-
             Position before = position();
             std::string word;
 
