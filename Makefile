@@ -10,41 +10,38 @@ DIR_JSON=$(DIR)json/
 DIR_DEBUG=$(DIR)debug/
 DIR_PARSER=$(DIR_JSON)parser/
 
-debug: $(DIR_DEBUG) tests
+HEADERS_OBJECTS = $(DIR_JSON)objects/*.h
+HEADERS_EXCEPTIONS = $(DIR_JSON)exception/*.h
+HEADERS = $(DIR)*.h $(DIR_JSON)*.h $(DIR_PARSER)*.h $(HEADERS_EXCEPTIONS) $(HEADERS_OBJECTS)
+
+
+debug: $(DIR_DEBUG) tests $(ELF)
 	$(CC) $(CXXFLAGS) $(CXXFLAGS_DEBUG) $(DIR_DEBUG)*.o -o $(ELF)
 
-tests: tests_tokenizer $(DIR_DEBUG)tests.o
+tests: json_debug $(DIR_DEBUG)tests.o
 
-$(DIR_DEBUG)tests.o: $(DIR)tests.cpp headers
+$(DIR_DEBUG)tests.o: $(DIR)tests.cpp $(HEADERS)
 	$(CC) $(CXXFLAGS) $(CXXFLAGS_DEBUG) -c -o $(DIR_DEBUG)tests.o $(DIR)tests.cpp
-
-tests_tokenizer: json_debug
 
 json_debug: $(DIR_DEBUG)json.o $(DIR_DEBUG)Parser.o $(DIR_DEBUG)Token.o $(DIR_DEBUG)Tokenizer.o $(DIR_DEBUG)main.o $(DIR_DEBUG)NumberParser.o
 
 $(DIR_DEBUG)main.o: $(DIR)main.cpp $(DIR)tests.h
 	$(CC) $(CXXFLAGS) $(CXXFLAGS_DEBUG) -c -o $(DIR_DEBUG)main.o $(DIR)main.cpp
 
-$(DIR_DEBUG)json.o: $(DIR_JSON)json.cpp headers
+$(DIR_DEBUG)json.o: $(DIR_JSON)json.cpp $(HEADERS)
 	$(CC) $(CXXFLAGS) $(CXXFLAGS_DEBUG) -c -o $(DIR_DEBUG)json.o $(DIR_JSON)json.cpp
 
-$(DIR_DEBUG)Parser.o: $(DIR_PARSER)Parser.cpp headers
+$(DIR_DEBUG)Parser.o: $(DIR_PARSER)Parser.cpp $(HEADERS)
 	$(CC) $(CXXFLAGS) $(CXXFLAGS_DEBUG) -c -o $(DIR_DEBUG)Parser.o $(DIR_PARSER)Parser.cpp
 
-$(DIR_DEBUG)Token.o: $(DIR_PARSER)Token.o headers
+$(DIR_DEBUG)Token.o: $(DIR_PARSER)Token.o $(HEADERS)
 	$(CC) $(CXXFLAGS) $(CXXFLAGS_DEBUG) -c -o $(DIR_DEBUG)Token.o $(DIR_PARSER)Token.cpp
 
-$(DIR_DEBUG)Tokenizer.o: $(DIR_PARSER)Tokenizer.cpp headers
+$(DIR_DEBUG)Tokenizer.o: $(DIR_PARSER)Tokenizer.cpp $(HEADERS)
 	$(CC) $(CXXFLAGS) $(CXXFLAGS_DEBUG) -c -o $(DIR_DEBUG)Tokenizer.o $(DIR_PARSER)Tokenizer.cpp
     
-$(DIR_DEBUG)NumberParser.o: $(DIR_PARSER)NumberParser.cpp headers
+$(DIR_DEBUG)NumberParser.o: $(DIR_PARSER)NumberParser.cpp $(HEADERS)
 	$(CC) $(CXXFLAGS) $(CXXFLAGS_DEBUG) -c -o $(DIR_DEBUG)NumberParser.o $(DIR_PARSER)NumberParser.cpp
-
-headers: $(DIR)*.h $(DIR_JSON)*.h $(DIR_PARSER)*.h
-
-$(DIR_JSON)objects.h: $(DIR_JSON)objects/*.h
-
-$(DIR_JSON)exceptions.h: $(DIR_JSON)exception/*.h
 
 $(DIR_DEBUG):
 	mkdir $(DIR_DEBUG)
