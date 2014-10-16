@@ -15,7 +15,7 @@ HEADERS_EXCEPTIONS = $(DIR_JSON)exception/*.h
 HEADERS = $(DIR)*.h $(DIR_JSON)*.h $(DIR_PARSER)*.h $(HEADERS_EXCEPTIONS) $(HEADERS_OBJECTS)
 
 
-debug: $(DIR_DEBUG) tests $(ELF)
+debug: $(DIR_DEBUG) tests
 	$(CC) $(CXXFLAGS) $(CXXFLAGS_DEBUG) $(DIR_DEBUG)*.o -o $(ELF)
 
 tests: json_debug $(DIR_DEBUG)tests.o
