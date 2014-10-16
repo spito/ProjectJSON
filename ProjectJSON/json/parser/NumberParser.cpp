@@ -7,10 +7,9 @@ namespace json {
         void NumberParser::run() {
             prepare();
 
-            bool quit = false;
             States state = States::Init;
             Position before;
-            while ( !quit ) {
+            while ( true ) {
                 before = _input.position();
                 char c = _input.readChar();
 

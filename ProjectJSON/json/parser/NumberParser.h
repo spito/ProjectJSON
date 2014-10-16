@@ -26,7 +26,6 @@ namespace json {
             bool _isMinus;
             bool _isE;
             bool _isExponentMinus;
-            bool _quit;
             States _state;
             double _denominator;
 
@@ -36,7 +35,17 @@ namespace json {
             long double _real;
         public:
             NumberParser( InputBuffer &buffer ) :
-                _input( buffer )
+                _input( buffer ),
+                _isReal( false ),
+                _isMinus( false ),
+                _isE( false ),
+                _isExponentMinus( false ),
+                _state( States::Init ),
+                _denominator( 1.0 ),
+                _rawToken(),
+                _exponent( 0 ),
+                _integer( 0 ),
+                _real( 0.0 )
             {}
 
             void run();
