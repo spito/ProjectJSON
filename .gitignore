@@ -15,10 +15,6 @@
 *.lastcodeanalysissucceeded
 *.xml
 
-# build directory
-ProjectJSON/[Dd]ebug
-ProjectJSON/[Rr]elease
-
 # linux binaries
 *.o
 jParser

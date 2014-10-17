@@ -7,45 +7,31 @@ CXXFLAGS_RELEASE=-O2
 
 DIR=ProjectJSON/
 DIR_JSON=$(DIR)json/
-DIR_DEBUG=$(DIR)debug/
 DIR_PARSER=$(DIR_JSON)parser/
 
-HEADERS_OBJECTS = $(DIR_JSON)objects/*.h
-HEADERS_EXCEPTIONS = $(DIR_JSON)exception/*.h
-HEADERS = $(DIR)*.h $(DIR_JSON)*.h $(DIR_PARSER)*.h $(HEADERS_EXCEPTIONS) $(HEADERS_OBJECTS)
+HEADERS_OBJECTS:= $(wildcard $(DIR_JSON)objects/*.h)
+HEADERS_EXCEPTIONS:= $(wildcard $(DIR_JSON)exception/*.h)
+HEADERS:= $(wildcard $(DIR)*.h) $(wildcard $(DIR_JSON)*.h) $(wildcard $(DIR_PARSER)*.h) $(HEADERS_EXCEPTIONS) $(HEADERS_OBJECTS)
 
+SOURCES:=$(wildcard $(DIR)*.cpp) $(wildcard $(DIR_JSON)*.cpp) $(wildcard $(DIR_PARSER)*.cpp)
+OBJECTS:=$(SOURCES:.cpp=.o)
+
+.PHONY: all
 all: debug
 
-debug: $(DIR_DEBUG) tests
-	$(CXX) $(CXXFLAGS) $(CXXFLAGS_DEBUG) $(DIR_DEBUG)*.o -o $(ELF)
+.PHONY: debug 
+debug: CXXFLAGS+=$(CXXFLAGS_DEBUG)
+debug: $(ELF)
 
-tests: json_debug $(DIR_DEBUG)tests.o
+.PHONY: release 
+release: CXXFLAGS+=$(CXXFLAGS_RELEASE) 
+release: $(ELF)
 
-$(DIR_DEBUG)tests.o: $(DIR)tests.cpp $(HEADERS)
-	$(CXX) $(CXXFLAGS) $(CXXFLAGS_DEBUG) -c -o $(DIR_DEBUG)tests.o $(DIR)tests.cpp
+$(ELF): $(OBJECTS)
+	$(CXX) $(CXXFLAGS) $(OBJECTS) -o $(ELF)
 
-json_debug: $(DIR_DEBUG)json.o $(DIR_DEBUG)Parser.o $(DIR_DEBUG)Token.o $(DIR_DEBUG)Tokenizer.o $(DIR_DEBUG)main.o $(DIR_DEBUG)NumberParser.o
-
-$(DIR_DEBUG)main.o: $(DIR)main.cpp $(DIR)tests.h
-	$(CXX) $(CXXFLAGS) $(CXXFLAGS_DEBUG) -c -o $(DIR_DEBUG)main.o $(DIR)main.cpp
-
-$(DIR_DEBUG)json.o: $(DIR_JSON)json.cpp $(HEADERS)
-	$(CXX) $(CXXFLAGS) $(CXXFLAGS_DEBUG) -c -o $(DIR_DEBUG)json.o $(DIR_JSON)json.cpp
-
-$(DIR_DEBUG)Parser.o: $(DIR_PARSER)Parser.cpp $(HEADERS)
-	$(CXX) $(CXXFLAGS) $(CXXFLAGS_DEBUG) -c -o $(DIR_DEBUG)Parser.o $(DIR_PARSER)Parser.cpp
-
-$(DIR_DEBUG)Token.o: $(DIR_PARSER)Token.cpp $(HEADERS)
-	$(CXX) $(CXXFLAGS) $(CXXFLAGS_DEBUG) -c -o $(DIR_DEBUG)Token.o $(DIR_PARSER)Token.cpp
-
-$(DIR_DEBUG)Tokenizer.o: $(DIR_PARSER)Tokenizer.cpp $(HEADERS)
-	$(CXX) $(CXXFLAGS) $(CXXFLAGS_DEBUG) -c -o $(DIR_DEBUG)Tokenizer.o $(DIR_PARSER)Tokenizer.cpp
-    
-$(DIR_DEBUG)NumberParser.o: $(DIR_PARSER)NumberParser.cpp $(HEADERS)
-	$(CXX) $(CXXFLAGS) $(CXXFLAGS_DEBUG) -c -o $(DIR_DEBUG)NumberParser.o $(DIR_PARSER)NumberParser.cpp
-
-$(DIR_DEBUG):
-	mkdir $(DIR_DEBUG)
+%.o: %.cpp $(HEADERS)
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 clean:
-	rm -rf $(DIR_DEBUG)*.o $(ELF)
+	rm -f $(OBJECTS)*.o $(ELF)
