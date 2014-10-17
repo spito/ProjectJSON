@@ -18,3 +18,7 @@
 # linux binaries
 *.o
 jParser
+jParserTest
+
+# temporaries
+*.swp
