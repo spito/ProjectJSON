@@ -35,7 +35,7 @@ $(DIR_DEBUG)json.o: $(DIR_JSON)json.cpp $(HEADERS)
 $(DIR_DEBUG)Parser.o: $(DIR_PARSER)Parser.cpp $(HEADERS)
 	$(CXX) $(CXXFLAGS) $(CXXFLAGS_DEBUG) -c -o $(DIR_DEBUG)Parser.o $(DIR_PARSER)Parser.cpp
 
-$(DIR_DEBUG)Token.o: $(DIR_PARSER)Token.o $(HEADERS)
+$(DIR_DEBUG)Token.o: $(DIR_PARSER)Token.cpp $(HEADERS)
 	$(CXX) $(CXXFLAGS) $(CXXFLAGS_DEBUG) -c -o $(DIR_DEBUG)Token.o $(DIR_PARSER)Token.cpp
 
 $(DIR_DEBUG)Tokenizer.o: $(DIR_PARSER)Tokenizer.cpp $(HEADERS)
