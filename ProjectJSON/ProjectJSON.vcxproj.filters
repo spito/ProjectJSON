@@ -31,11 +31,11 @@
     <Filter Include="Header Files\json\exception">
       <UniqueIdentifier>{7eece4fe-eb49-499b-bb0b-360a26adb96b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="test">
+      <UniqueIdentifier>{c77ef657-be98-46e7-9c44-f83418a0c3e0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="tests.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="json\objects\BaseObject.h">
       <Filter>Header Files\json\objects</Filter>
     </ClInclude>
@@ -117,12 +117,15 @@
     <ClInclude Include="json\Output.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="tests\catch.h">
+      <Filter>test</Filter>
+    </ClInclude>
+    <ClInclude Include="tests\tests.h">
+      <Filter>test</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="tests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="json\parser\Token.cpp">
@@ -140,11 +143,16 @@
     <ClCompile Include="json\parser\NumberParser.cpp">
       <Filter>Source Files\json\parser</Filter>
     </ClCompile>
+    <ClCompile Include="tests\tests.cpp">
+      <Filter>test</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Readme.txt" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="test1.json" />
+    <None Include="tests\test1.json">
+      <Filter>test</Filter>
+    </None>
   </ItemGroup>
 </Project>
