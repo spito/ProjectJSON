@@ -126,10 +126,10 @@ namespace json {
             _input.read();// read "
 
             while ( true ) {
-                char c = _input.read();
                 if ( _input.eof() ) {
                     throw exception::EndOfFile( "", position() );
                 }
+                char c = _input.read();
 
                 if ( special ) {
                     switch ( c ) {
