@@ -11,9 +11,8 @@
 
 namespace test {
 
-    template< typename T >
-    T abs( T value ) {
-        return value < 0 ? value * -1 : value;
+    inline Approx< long double > approx( long double value ) {
+        return Approx< long double >( value );
     }
 
     Token tokenize( std::string json, bool exceptionExpected = false ) {
@@ -22,7 +21,7 @@ namespace test {
         try {
             tokenizer.lookAtToken( token );
         }
-        catch ( Exception &ex ) {
+        catch ( Exception & ) {
             if ( exceptionExpected ) throw;
             WARN( std::string( "" ) + "exception raised while tokenizing this input:\n" + json );
             return Token();
@@ -44,6 +43,7 @@ using ::json::parser::Token;
 using ::json::exception::Exception;
 using ::test::tokenize;
 using ::test::tokenEquality;
+using ::test::approx;
 
 TEST_CASE( "Basic tokenizer tests", "[tokenizer]" ) {
     CHECK( tokenEquality( tokenize( "[" ), Token( Token::Type::LeftBracket, "[" ) ) );
@@ -110,9 +110,10 @@ TEST_CASE( "Reals tokenizer tests", "[tokenizer]" ) {
 
     auto token = tokenize( "0.0" );
     CHECK( tokenEquality( token, Token( t, "0.0" ) ) );
-    CHECK( token.real() == 0.0 );
+    CHECK( token.real() == approx( 0.0 ) );
 
     token = tokenize( "1e-1" );
     CHECK( tokenEquality( token, Token( t, "1e-1" ) ) );
-    CHECK( abs( token.real() - 0.1 ) <= 1e-6 );
+    CHECK( token.real() == approx( 0.1 ) );
+
 }

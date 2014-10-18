@@ -2020,9 +2020,10 @@ namespace Catch {
 namespace Catch {
 namespace Detail {
 
+    template< typename Real >
     class Approx {
     public:
-        explicit Approx ( double value )
+        explicit Approx( Real value )
         :   m_epsilon( std::numeric_limits<float>::epsilon()*100 ),
             m_scale( 1.0 ),
             m_value( value )
@@ -2038,36 +2039,36 @@ namespace Detail {
             return Approx( 0 );
         }
 
-        Approx operator()( double value ) {
+        Approx operator()( Real value ) {
             Approx approx( value );
             approx.epsilon( m_epsilon );
             approx.scale( m_scale );
             return approx;
         }
 
-        friend bool operator == ( double lhs, Approx const& rhs ) {
+        friend bool operator == ( Real lhs, Approx const& rhs ) {
             // Thanks to Richard Harris for his help refining this formula
             return fabs( lhs - rhs.m_value ) < rhs.m_epsilon * (rhs.m_scale + (std::max)( fabs(lhs), fabs(rhs.m_value) ) );
         }
 
-        friend bool operator == ( Approx const& lhs, double rhs ) {
+        friend bool operator == ( Approx const& lhs, Real rhs ) {
             return operator==( rhs, lhs );
         }
 
-        friend bool operator != ( double lhs, Approx const& rhs ) {
+        friend bool operator != ( Real lhs, Approx const& rhs ) {
             return !operator==( lhs, rhs );
         }
 
-        friend bool operator != ( Approx const& lhs, double rhs ) {
+        friend bool operator != ( Approx const& lhs, Real rhs ) {
             return !operator==( rhs, lhs );
         }
 
-        Approx& epsilon( double newEpsilon ) {
+        Approx& epsilon( Real newEpsilon ) {
             m_epsilon = newEpsilon;
             return *this;
         }
 
-        Approx& scale( double newScale ) {
+        Approx& scale( Real newScale ) {
             m_scale = newScale;
             return *this;
         }
@@ -2079,14 +2080,14 @@ namespace Detail {
         }
 
     private:
-        double m_epsilon;
-        double m_scale;
-        double m_value;
+        Real m_epsilon;
+        Real m_scale;
+        Real m_value;
     };
 }
 
-template<>
-inline std::string toString<Detail::Approx>( Detail::Approx const& value ) {
+template<typename Real>
+inline std::string toString( Detail::Approx< Real > const& value ) {
     return value.toString();
 }
 
