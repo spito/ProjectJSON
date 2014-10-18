@@ -15,10 +15,13 @@ INCLUDE=$(DIR)
 
 HEADERS_OBJECTS:= $(wildcard $(DIR_JSON)objects/*.h)
 HEADERS_EXCEPTIONS:= $(wildcard $(DIR_JSON)exception/*.h)
-HEADERS:= $(wildcard $(DIR)*.h) $(wildcard $(DIR_JSON)*.h) $(wildcard $(DIR_PARSER)*.h) $(HEADERS_EXCEPTIONS) $(HEADERS_OBJECTS)
+HEADERS:= $(wildcard $(DIR)*.h) $(wildcard $(DIR_JSON)*.h) $(wildcard $(DIR_TESTS)*.h) $(wildcard $(DIR_PARSER)*.h) $(HEADERS_EXCEPTIONS) $(HEADERS_OBJECTS)
 
 SOURCES:=$(wildcard $(DIR_JSON)*.cpp) $(wildcard $(DIR_PARSER)*.cpp)
-OBJECTS:=$(SOURCES:.cpp=.o)
+SOURCES_MAIN:=$(SOURCES) $(DIR)main.cpp
+SOURCES_TEST:=$(SOURCES) $(wildcard $(DIR_TESTS)*.cpp)
+OBJECTS_MAIN:=$(SOURCES_MAIN:.cpp=.o)
+OBJECTS_TEST:=$(SOURCES_TEST:.cpp=.o)
 
 .PHONY: all
 all: debug
@@ -35,14 +38,14 @@ debug: $(ELF) $(ELF_TEST)
 release: CXXFLAGS+=$(CXXFLAGS_RELEASE) -I$(INCLUDE)
 release: $(ELF) $(ELF_TEST)
 
-$(ELF): $(OBJECTS) $(DIR)main.o
+$(ELF): $(OBJECTS_MAIN)
 	$(CXX) $(CXXFLAGS) $^ -o $(ELF)
 
-$(ELF_TEST): $(OBJECTS) $(DIR_TESTS)tests.o
+$(ELF_TEST): $(OBJECTS_TEST)
 	$(CXX) $(CXXFLAGS) $^ -o $(ELF_TEST)
 
 %.o: %.cpp $(HEADERS)
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 clean:
-	rm -f $(OBJECTS)* $(DIR)main.o $(DIR_TESTS)tests.o $(ELF) $(ELF_TEST)
+	rm -f $(OBJECTS_MAIN) $(OBJECTS_TEST) $(ELF) $(ELF_TEST)
