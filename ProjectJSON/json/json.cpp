@@ -65,8 +65,7 @@ namespace json {
             errorMessage(
                 ex,
                 ex.given(),
-                ex.expected()
-                );
+                ex.expected() );
         }
         catch ( exception::Exception &ex ) {
             errorMessage( ex );
@@ -75,7 +74,7 @@ namespace json {
             errorMessage( ex );
         }
         catch ( ... ) {
-            std::cerr << "Internal parser error." << std::endl;
+            _out << "Internal parser error." << std::endl;
         }
         return handle;
     }
