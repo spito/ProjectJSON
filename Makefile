@@ -27,11 +27,11 @@ all: debug
 test: debug
 	./$(ELF_TEST)
 
-.PHONY: debug 
+.PHONY: debug
 debug: CXXFLAGS+=$(CXXFLAGS_DEBUG) -I$(INCLUDE)
 debug: $(ELF) $(ELF_TEST)
 
-.PHONY: release 
+.PHONY: release
 release: CXXFLAGS+=$(CXXFLAGS_RELEASE) -I$(INCLUDE)
 release: $(ELF) $(ELF_TEST)
 
@@ -45,4 +45,4 @@ $(ELF_TEST): $(OBJECTS) $(DIR_TESTS)tests.o
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 clean:
-	rm -f $(OBJECTS)*.o $(ELF)
+	rm -f $(OBJECTS)* $(DIR)main.o $(DIR_TESTS)tests.o $(ELF) $(ELF_TEST)
