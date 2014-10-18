@@ -91,6 +91,11 @@ namespace json {
     }
 }
 
+std::ostream &operator<<( std::ostream &out, json::parser::Token token ) {
+    return out << token.type();
+    // return out;
+}
+
 std::ostream &operator<<( std::ostream &out, json::parser::Token::Type type ) {
     out << json::parser::Token::typeName( type );
     return out;

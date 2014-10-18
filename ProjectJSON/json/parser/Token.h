@@ -172,7 +172,7 @@ namespace json {
             {
                 return _token.begin();
             }
-            auto end() 
+            auto end()
                 -> decltype( _token.end() )
             {
                 return _token.end();
@@ -210,4 +210,5 @@ namespace std {
     }
 }
 
+std::ostream &operator<<( std::ostream &, json::parser::Token );
 std::ostream &operator<<( std::ostream &, json::parser::Token::Type );
