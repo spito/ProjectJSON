@@ -146,6 +146,9 @@
     <ClCompile Include="tests\tests.cpp">
       <Filter>test</Filter>
     </ClCompile>
+    <ClCompile Include="tests\main-test.cpp">
+      <Filter>test</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Readme.txt" />
