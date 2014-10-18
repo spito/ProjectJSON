@@ -116,4 +116,11 @@ TEST_CASE( "Reals tokenizer tests", "[tokenizer]" ) {
     CHECK( tokenEquality( token, Token( t, "1e-1" ) ) );
     CHECK( token.real() == approx( 0.1 ) );
 
+    token = tokenize( "0.42e2" );
+    CHECK( tokenEquality( token, Token( t, "0.42e2" ) ) );
+    CHECK( token.real() == approx( 42 ) );
+
+    token = tokenize( "-0.42e2" );
+    CHECK( tokenEquality( token, Token( t, "-0.42e2" ) ) );
+    CHECK( token.real() == approx( -42 ) );
 }
