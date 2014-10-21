@@ -2,6 +2,7 @@
 
 #include <utility>
 #include <cstddef>
+#include <iostream>
 
 namespace json {
 
@@ -96,3 +97,12 @@ namespace std {
         lhs.swap( rhs );
     }
 }
+
+inline std::ostream &operator<<( std::ostream &out, const ::json::Position &p ) {
+    out << "[" <<
+        p.position() << "; " <<
+        p.line() << "; " <<
+        p.column() << "]";
+    return out;
+}
+
