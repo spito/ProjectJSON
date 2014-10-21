@@ -138,6 +138,7 @@
     <ClInclude Include="tests\tests.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="tests\test-utils.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="json\json.cpp" />

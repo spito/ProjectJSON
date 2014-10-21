@@ -1,42 +1,4 @@
-#define JSON_TEST
-
-#include <iostream>
-#include <vector>
-#include <string>
-
-#include "catch.h"
-
-#include "tests.h"
-#include "json/parser/Tokenizer.h"
-
-namespace test {
-
-    inline Approx< long double > approx( long double value ) {
-        return Approx< long double >( value );
-    }
-
-    Token tokenize( std::string json, bool exceptionExpected = false ) {
-        auto tokenizer = ::json::parser::Tokenizer( json );
-        Token token;
-        try {
-            tokenizer.lookAtToken( token );
-        }
-        catch ( Exception & ) {
-            if ( exceptionExpected ) throw;
-            WARN( std::string( "" ) + "exception raised while tokenizing this input:\n" + json );
-            return Token();
-        }
-        return token;
-    }
-
-    bool tokenEquality( const Token &given, const Token &expected ) {
-        if ( given != expected ) {
-            std::cout << "Token mismatch! Got " << given << ", expected " << expected << "." << std::endl;
-            return false;
-        }
-        return true;
-    }
-}  // namespace test
+#include "test-utils.h"
 
 using ::json::Position;
 using ::json::parser::Token;
@@ -44,6 +6,8 @@ using ::json::exception::Exception;
 using ::test::tokenize;
 using ::test::tokenEquality;
 using ::test::approx;
+using ::test::exceptionEquality;
+using ::test::exceptionRaised;
 
 TEST_CASE( "Basic tokenizer tests", "[tokenizer]" ) {
     CHECK( tokenEquality( tokenize( "[" ), Token( Token::Type::LeftBracket, "[" ) ) );
@@ -123,4 +87,14 @@ TEST_CASE( "Reals tokenizer tests", "[tokenizer]" ) {
     token = tokenize( "-0.42e2" );
     CHECK( tokenEquality( token, Token( t, "-0.42e2" ) ) );
     CHECK( token.real() == approx( -42 ) );
+}
+
+TEST_CASE( "Exceptions tests", "[exceptions]" ) {
+    // check for strict exception equality
+    CHECK( exceptionEquality( "whoou", ::json::exception::InvalidCharacter( 'w', ",:{}[]tfn\"-0123456789", Position() ) ) );
+    // check only for type of the exception
+    CHECK( exceptionRaised( "whoou", ::json::exception::InvalidCharacter( '-', Position() ) ) );
+
+
+    CHECK( exceptionEquality( "\"", ::json::exception::EndOfFile( "", Position( 1, 1, 2 ) ) ) );
 }
