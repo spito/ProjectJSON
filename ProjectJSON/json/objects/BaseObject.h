@@ -16,6 +16,8 @@ namespace json {
                 _type( t )
             {}
         public:
+            virtual ~BaseObject() {}
+
             bool is( Type t ) const {
                 return _type == t;
             }
