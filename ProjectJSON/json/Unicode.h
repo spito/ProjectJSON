@@ -39,16 +39,16 @@ namespace json {
             return result;
         }
 
-        static bool fromHexToChar( char higher, char lower, char &out ) {
+        static bool fromHexToChar( char higher, char lower, uchar &out ) {
 
-            uchar hi;
-            uchar lo;
+            uchar hi{};
+            uchar lo{};
 
             bool result =
                 hex( higher, hi ) &&
                 hex( lower, lo );
             if ( result )
-                out = char( (hi << 4) | lo );
+                out = (hi << 4) | lo;
             return result;
         }
 
