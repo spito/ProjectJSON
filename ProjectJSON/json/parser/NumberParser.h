@@ -48,6 +48,9 @@ namespace json {
                 _real( 0.0 )
             {}
 
+            NumberParser( const NumberParser & ) = delete;
+            NumberParser &operator=( const NumberParser & ) = delete;
+
             void run();
 
             long long integer() const {

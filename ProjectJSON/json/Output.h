@@ -18,6 +18,9 @@ namespace json {
             _padding( "    " )
         {}
 
+        Output( const Output & ) = delete;
+        Output &operator=( const Output & ) = delete;
+
         void flush() {
             flushLayer( _ptr, 0 );
         }

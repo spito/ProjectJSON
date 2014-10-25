@@ -20,6 +20,9 @@ namespace json {
             _out( out )
         {}
 
+        Factory( const Factory & ) = delete;
+        Factory operator=( const Factory & ) = delete;
+
         Handle parseJson( const std::string & );
         Handle parseFile( const std::string & );
         Handle parseFile( std::ifstream & );
