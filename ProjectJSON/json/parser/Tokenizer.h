@@ -38,7 +38,7 @@ namespace json {
                 return _input.position( std::move( p ) );
             }
 
-            bool isBadChar( char );
+            static bool isBadChar( char );
 
             void getToken( Token & );
 
