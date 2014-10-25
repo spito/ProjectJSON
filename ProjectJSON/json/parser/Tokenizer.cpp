@@ -129,6 +129,7 @@ namespace json {
                 if ( _input.eof() ) {
                     throw exception::EndOfFile( "", position() );
                 }
+                Position p = position();
                 char c = _input.read();
 
                 if ( special ) {
@@ -155,8 +156,9 @@ namespace json {
                         break;
                     case 'u':
                         rawToken += processUnicode();
+                        break;
                     default:
-                        throw exception::InvalidCharacter( c, "\"\\/bfnrtu", position() );
+                        throw exception::InvalidCharacter( c, "\"\\/bfnrtu", p );
                     }
                     special = false;
                 }
@@ -165,86 +167,42 @@ namespace json {
                 else if ( c == '"' )
                     break;
                 else if ( isBadChar( c ) )
-                    throw exception::InvalidCharacter( c, position() );
+                    throw exception::InvalidCharacter( c, p );
                 else
                     rawToken.push_back( c );
             }
             token = Token( Token::Type::String, rawToken, before );
         }
 
-        // TODO: implement
+        // TODO: check
         std::string Tokenizer::processUnicode() {
-            throw exception::UnsupportedFeature( "process unicode", position() );
-#if 0
-            inline json_uchar SurrogatePair( const json_uchar hi, const json_uchar lo ) json_pure;
-            inline json_uchar SurrogatePair( const json_uchar hi, const json_uchar lo ) json_nothrow{
-                JSON_ASSERT( sizeof( unsigned int ) == 4, JSON_TEXT( "size of unsigned int is not 32-bit" ) );
-                JSON_ASSERT( sizeof( json_uchar ) == 4, JSON_TEXT( "size of json_char is not 32-bit" ) );
-                return ( ( ( hi << 10 ) & 0x1FFC00 ) + 0x10000 ) | lo & 0x3FF;
-            }
+            std::string result;
 
-                void JSONWorker::UTF( const json_char * & pos, json_string & result, const json_char * const end ) json_nothrow{
-                JSON_ASSERT_SAFE( ( (long)end - (long)pos ) > 4, JSON_TEXT( "UTF will go out of bounds" ), return; );
-                json_uchar first = UTF8( pos, end );
-                if ( json_unlikely( ( first > 0xD800 ) && ( first < 0xDBFF ) &&
-                    ( *( pos + 1 ) == '\\' ) && ( *( pos + 2 ) == 'u' ) ) ) {
-                    const json_char * original_pos = pos;  //if the 2nd character is not correct I need to roll back the iterator
-                    pos += 2;
-                    json_uchar second = UTF8( pos, end );
-                    //surrogate pair, not two characters
-                    if ( json_unlikely( ( second > 0xDC00 ) && ( second < 0xDFFF ) ) ) {
-                        result += SurrogatePair( first, second );
-                    }
-                    else {
-                        pos = original_pos;
-                    }
-                }
-                else {
-                    result += first;
-                }
-            }
-            json_uchar JSONWorker::UTF8( const json_char * & pos, const json_char * const end ) json_nothrow{
-                JSON_ASSERT_SAFE( ( (long)end - (long)pos ) > 4, JSON_TEXT( "UTF will go out of bounds" ), return JSON_TEXT( '\0' ); );
-#ifdef JSON_UNICODE
-                ++pos;
-                json_uchar temp = Hex( pos ) << 8;
-                ++pos;
-                return temp | Hex( pos );
-#else
-                JSON_ASSERT( *( pos + 1 ) == JSON_TEXT( '0' ), JSON_TEXT( "wide utf character (hihi)" ) );
-                JSON_ASSERT( *( pos + 2 ) == JSON_TEXT( '0' ), JSON_TEXT( "wide utf character (hilo)" ) );
-                pos += 3;
-                return Hex( pos );
-#endif
-            }
-            json_char JSONWorker::Hex( const json_char * & pos ) json_nothrow{
-                /*
-                takes the numeric value of the next two characters and convert them
-                \u0058 becomes 0x58
+            unsigned char decoded;
+            char low;
+            char high;
+            Position before;
+            for ( int i = 0; i < 2; ++i ) {
+                before = position();
+                high = _input.read();
+                if ( !std::isxdigit( high ) )
+                    throw exception::InvalidCharacter( high, "0123456789abcdef", before );
+                before = position();
+                low = _input.read();
+                if ( !std::isxdigit( low ) )
+                    throw exception::InvalidCharacter( low, "0123456789abcdef", before );
 
-                In case of \u, it's SpecialChar's responsibility to move past the first two chars
-                as this method is also used for \x
-                */
-                //First character
-                json_uchar hi = *pos++ - 48;
-                if ( hi > 48 ) {  //A-F don't immediately follow 0-9, so have to pull them down a little
-                    hi -= 39;
-                }
-                else if ( hi > 9 ) {  //neither do a-f
-                    hi -= 7;
-                }
-                //second character
-                json_uchar lo = *pos - 48;
-                if ( lo > 48 ) {  //A-F don't immediately follow 0-9, so have to pull them down a little
-                    lo -= 39;
-                }
-                else if ( lo > 9 ) {  //neither do a-f
-                    lo -= 7;
-                }
-                //combine them
-                return (json_char)( ( hi << 4 ) | lo );
+                if ( !Unicode::fromHexToChar( high, low, decoded ) )
+                    throw exception::InternalError( "unicode decoding failed", before );
+
+                // ignore leading zero
+                // let \u0058 becomes 0x58
+                // BUT
+                // let \u1234 becomes 0x12 0x34
+                if ( decoded || i )
+                    result += decoded;
             }
-#endif
+            return result;
         }
 
         // TODO: check needed
