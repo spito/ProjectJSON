@@ -112,6 +112,7 @@
     <ClInclude Include="json\exception\InvalidCharacter.h" />
     <ClInclude Include="json\exception\InvalidFile.h" />
     <ClInclude Include="json\exception\InvalidToken.h" />
+    <ClInclude Include="json\exception\Unicode.h" />
     <ClInclude Include="json\exception\UnsupportedFeature.h" />
     <ClInclude Include="json\json.h" />
     <ClInclude Include="json\objects.h" />
@@ -135,9 +136,6 @@
     <ClInclude Include="tests\catch.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="tests\tests.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="tests\test-utils.h" />
   </ItemGroup>
   <ItemGroup>
@@ -146,6 +144,7 @@
     <ClCompile Include="json\parser\Parser.cpp" />
     <ClCompile Include="json\parser\Token.cpp" />
     <ClCompile Include="json\parser\Tokenizer.cpp" />
+    <ClCompile Include="json\Unicode.cpp" />
     <ClCompile Include="main.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Test|Win32'">true</ExcludedFromBuild>
     </ClCompile>
@@ -155,6 +154,7 @@
     <ClCompile Include="tests\tests.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="tests\unicode-tests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Readme.txt" />
