@@ -4,6 +4,7 @@
 #include "../Unicode.h"
 
 #include <string>
+#include <cctype>
 
 namespace json {
     namespace exception {

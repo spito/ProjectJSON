@@ -17,11 +17,11 @@ namespace json {
                 _position( std::move( p ) )
             {}
 
-            const char *what() const JSON_NOEXCEPT override {
+            const char *what() const JSON_NOEXCEPT override{
                 return _msg.c_str();
             }
 
-            Position position() const JSON_NOEXCEPT override {
+            Position position() const JSON_NOEXCEPT override{
                 return _position;
             }
         };
