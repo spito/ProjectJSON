@@ -141,12 +141,11 @@ namespace json {
         std::string decodeUnicode16( const std::string &text, size_t &index ) {
             char hex[ 5 ] = { 0 };
 
-            char c[ 2 ] = {
-                modifyChar( Mask::U16, text[ index ] ) >> 2,
+            char c[ 2 ];
+            c[ 0 ] = modifyChar( Mask::U16, text[ index ] ) >> 2;
 
-                modifyChar( Mask::Carry, text[ index ] ) << 6 |
-                modifyChar( Mask::Tail, text[ index + 1 ] )
-            };
+            c[ 1 ] = (modifyChar( Mask::Carry, text[ index ] ) << 6) |
+                modifyChar( Mask::Tail, text[ index + 1 ] );
 
             fromCharToHex( c[ 0 ], hex[ 0 ], hex[ 1 ] );
             fromCharToHex( c[ 1 ], hex[ 2 ], hex[ 3 ] );
@@ -159,13 +158,14 @@ namespace json {
         std::string decodeUnicode24( const std::string &text, size_t &index ) {
             char hex[ 5 ] = { 0 };
 
-            char c[ 2 ] = {
-                modifyChar( Mask::U24, text[ index ] ) << 4 |
-                modifyChar( Mask::Tail, text[ index + 1 ] ) >> 2,
+            char c[ 2 ];
+            c[ 0 ] =
+                ( modifyChar( Mask::U24, text[ index ] ) << 4 ) |
+                ( modifyChar( Mask::Tail, text[ index + 1 ] ) >> 2 );
 
-                modifyChar( Mask::Carry, text[ index + 1 ] ) << 6 |
-                modifyChar( Mask::Tail, text[ index + 2 ] )
-            };
+            c[ 1 ] =
+                ( modifyChar( Mask::Carry, text[ index + 1 ] ) << 6 ) |
+                modifyChar( Mask::Tail, text[ index + 2 ] );
             
             fromCharToHex( c[ 0 ], hex[ 0 ], hex[ 1 ] );
             fromCharToHex( c[ 1 ], hex[ 2 ], hex[ 3 ] );

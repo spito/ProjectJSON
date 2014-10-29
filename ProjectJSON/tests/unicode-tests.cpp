@@ -5,10 +5,10 @@ using uchar = unsigned char;
 
 TEST_CASE( "encode character", "[unicode]" ) {
 
-    char expected16[] = { 0xc3, 0xbf, 0 };
+    char expected16[] = { char(0xc3), char(0xbf), 0 };
     CHECK( expected16 == json::Unicode::encode( "ff" ) );
 
-    char expected24[] = {0xea, 0xaa, 0xaa, 0};
+    char expected24[] = {char(0xea), char(0xaa), char(0xaa), 0};
     CHECK( expected24 == json::Unicode::encode( "AAAA" ) );
 }
 
