@@ -11,13 +11,19 @@ namespace json {
             Tail = 0x3f,
             U8 = 0x7f,
             U16 = 0x1f,
-            U24 = 0x0f
+            U24 = 0x0f,
+            U32 = 0x07,
+            U40 = 0x03,
+            U48 = 0x01
         };
         enum class Prefix : uchar {
             Tail = 0x80,
             U8 = 0,
             U16 = 0xc0,
-            U24 = 0xe0
+            U24 = 0xe0,
+            U32 = 0xf0,
+            U40 = 0xf8,
+            U48 = 0xfc
         };
 
         bool hex2char( char c, uchar &u ) {
@@ -132,6 +138,18 @@ namespace json {
             return ( ~uchar( Mask::U24 ) & c ) == uchar( Prefix::U24 );
         }
 
+        inline bool isUnicode32( uchar c ) {
+            return ( ~uchar( Mask::U32 ) & c ) == uchar( Prefix::U32 );
+        }
+
+        inline bool isUnicode40( uchar c ) {
+            return ( ~uchar( Mask::U40 ) & c ) == uchar( Prefix::U40 );
+        }
+
+        inline bool isUnicode48( uchar c ) {
+            return ( ~uchar( Mask::U48 ) & c ) == uchar( Prefix::U48 );
+        }
+
         std::string decodeUnicode8( const std::string &text, size_t &index ) {
             char hex[ 3 ] = { 0 };
             fromCharToHex( text[ index ], hex[ 0 ], hex[ 1 ] );
@@ -142,9 +160,11 @@ namespace json {
             char hex[ 5 ] = { 0 };
 
             char c[ 2 ];
-            c[ 0 ] = modifyChar( Mask::U16, text[ index ] ) >> 2;
+            c[ 0 ] =
+                modifyChar( Mask::U16, text[ index ] ) >> 2;
 
-            c[ 1 ] = (modifyChar( Mask::Carry, text[ index ] ) << 6) |
+            c[ 1 ] =
+                (modifyChar( Mask::Carry, text[ index ] ) << 6) |
                 modifyChar( Mask::Tail, text[ index + 1 ] );
 
             fromCharToHex( c[ 0 ], hex[ 0 ], hex[ 1 ] );
@@ -191,6 +211,8 @@ namespace json {
                     result += decodeUnicode16( text, i );
                 else if ( isUnicode24( text[ i ] ) )
                     result += decodeUnicode24( text, i );
+                else if ( isUnicode32( text[ i ] ) || isUnicode40( text[ i ] ) || isUnicode48( text[ i ] ) )
+                    throw exception::UnicodeDecoding( "Unsupported length of UTF-8 character" );
                 else if ( uchar( text[ i ] ) < 0x20 ) {
                     if ( useExtension )
                         result += decodeByte( text[ i ] );
