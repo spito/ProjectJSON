@@ -8,6 +8,7 @@
 namespace json {
     namespace objects {
 
+        // This class represents unicode string using UTF-8 encoding.
         class String : public BaseObject {
             std::string _value;
         public:
@@ -28,7 +29,7 @@ namespace json {
             }
 
             std::string toString() const override {
-                return '"' + Unicode::transform( value() ) + '"';
+                return '"' + Unicode::decode( value() ) + '"';
             }
 
             std::string &value() {

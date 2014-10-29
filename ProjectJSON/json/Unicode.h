@@ -1,89 +1,25 @@
 #pragma once
 
-#include <cctype>
-
+#include <string>
 namespace json {
 
-    class Unicode {
-    public:
+    namespace Unicode {
         using uchar = unsigned char;
-    
-        static std::string transform( const std::string &value ) {
-            std::string result;
-            for ( char c : value ) {
-                switch ( c ) {
-                case '"':
-                case '\\':
-                    result += '\\';
-                    result += c;
-                    break;
-                case '\b':
-                    result += "\\b";
-                    break;
-                case '\f':
-                    result += "\\f";
-                    break;
-                case '\n':
-                    result += "\\n";
-                    break;
-                case '\r':
-                    result += "\\r";
-                    break;
-                case '\t':
-                    result += "\\t";
-                    break;
-                default:
-                    result += c;
-                }
-            }
-            return result;
-        }
 
-        static bool fromHexToChar( char higher, char lower, uchar &out ) {
+        // This functions can encode multi-byte character
+        // from \uXXXX or \xXX into UTF-8 encoding
+        std::string encode( const std::string & );
 
-            uchar hi{};
-            uchar lo{};
+        // This function can decode whole text into \uXXXX escape sequence
+        // If useExtension is set to true,
+        //    the function is allowed to generate \xXX escape sequences
+        //    if it is reliable
+        std::string decode( const std::string &, bool useExtension = false );
 
-            bool result =
-                hex( higher, hi ) &&
-                hex( lower, lo );
-            if ( result )
-                out = (hi << 4) | lo;
-            return result;
-        }
 
-        static void fromCharToHex( char c, char &higher, char &lower, bool uppercase = true ) {
-            uchar hi = uchar( c ) >> 4;
-            uchar lo = uchar( c );
+        bool fromHexToChar( char higher, char lower, uchar &out );
 
-            higher = hex( hi, uppercase );
-            lower = hex( lo, uppercase );
-        }
+        void fromCharToHex( uchar c, char &higher, char &lower, bool uppercase = true );
 
-    private:
-
-        static bool hex( char c, uchar &u ) {
-            if ( std::isdigit( c ) ) {
-                u = uchar( c - '0' );
-                return true;
-            }
-            if ( std::isxdigit( c ) ) {
-                u = std::islower( c ) ?
-                    uchar( c - 'a' ) :
-                    uchar( c - 'A' );
-                return true;
-            }
-            return false;
-        }
-
-        static char hex( uchar c, bool uppercase ) {
-            // allow just lower 4 bits
-            c &= 15;
-
-            if ( c < 10 )
-                return '0' + c;
-
-            return ( uppercase ? 'A' : 'a' ) - 10 + c;
-        }
     };
 }

@@ -155,10 +155,14 @@ namespace json {
                         rawToken.push_back( '\t' );
                         break;
                     case 'u':
-                        rawToken += processUnicode();
+                        rawToken += processUnicode(4);
+                        break;
+                    // This is only our extension
+                    case 'x':
+                        rawToken += processUnicode( 2 );
                         break;
                     default:
-                        throw exception::InvalidCharacter( c, "\"\\/bfnrtu", p );
+                        throw exception::InvalidCharacter( c, "\"\\/bfnrtux", p );
                     }
                     special = false;
                 }
@@ -174,35 +178,19 @@ namespace json {
             token = Token( Token::Type::String, rawToken, before );
         }
 
-        // TODO: check
-        std::string Tokenizer::processUnicode() {
-            std::string result;
+        std::string Tokenizer::processUnicode(int length) {
+            std::string unicode;
+            Position before = position();
 
-            unsigned char decoded;
-            char low;
-            char high;
-            Position before;
-            for ( int i = 0; i < 2; ++i ) {
-                before = position();
-                high = _input.read();
-                if ( !std::isxdigit( high ) )
-                    throw exception::InvalidCharacter( high, "0123456789abcdef", before );
-                before = position();
-                low = _input.read();
-                if ( !std::isxdigit( low ) )
-                    throw exception::InvalidCharacter( low, "0123456789abcdef", before );
-
-                if ( !Unicode::fromHexToChar( high, low, decoded ) )
-                    throw exception::InternalError( "unicode decoding failed", before );
-
-                // ignore leading zero
-                // let \u0058 becomes 0x58
-                // BUT
-                // let \u1234 becomes 0x12 0x34
-                if ( decoded || i )
-                    result += decoded;
+            for ( int i = 0; i < length; ++i ) {
+                Position p = position();
+                unicode += _input.read();
+                if ( !std::isxdigit( unicode.back() ) )
+                    throw exception::InvalidCharacter( unicode.back(), "0123456789abcdef", p );
             }
-            return result;
+            /*            if ( !Unicode::fromHexToChar( hex[0], hex[1], encoded ) )
+            throw exception::InternalError( "unicode decoding failed", before );*/
+            return Unicode::encode( unicode );
         }
 
         // TODO: check needed

@@ -102,7 +102,7 @@ namespace json {
         }
 
         void flushString( const objects::String *s ) {
-            _out << '"' << Unicode::transform( s->value() ) << '"';
+            _out << '"' << Unicode::decode( s->value() ) << '"';
         }
 
         void padding( int layer ) {
