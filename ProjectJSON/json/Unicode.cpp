@@ -73,7 +73,7 @@ namespace json {
         }
 
         inline uchar modifyChar( Prefix prefix, Mask mask, uchar c ) {
-            return uchar(prefix) | ( uchar(mask) & c );
+            return uchar( prefix ) | ( uchar( mask ) & c );
         }
         inline uchar modifyChar( Mask mask, uchar c ) {
             return uchar( mask ) & c;
@@ -117,17 +117,17 @@ namespace json {
             if ( input.size() == 2 ) {
                 uchar c;
                 if ( !fromHexToChar( input[ 0 ], input[ 1 ], c ) )
-                    throw exception::UnicodeEncoding( "Invalid input format" );
+                    throw exception::Unicode( "Invalid input format" );
                 return encode( c );
             }
             if ( input.size() == 4 ) {
                 uchar c1, c2;
                 if ( !fromHexToChar( input[ 0 ], input[ 1 ], c1 ) ||
                      !fromHexToChar( input[ 2 ], input[ 3 ], c2 ) )
-                    throw exception::UnicodeEncoding( "Invalid input format" );
+                     throw exception::Unicode( "Invalid input format" );
                 return encode( c1, c2 );
             }
-            throw exception::UnicodeEncoding( "Unsupported length of unicode character" );
+            throw exception::Unicode( "Unsupported length of unicode character" );
         }
 
         inline bool isUnicode16( uchar c ) {
@@ -164,7 +164,7 @@ namespace json {
                 modifyChar( Mask::U16, text[ index ] ) >> 2;
 
             c[ 1 ] =
-                (modifyChar( Mask::Carry, text[ index ] ) << 6) |
+                ( modifyChar( Mask::Carry, text[ index ] ) << 6 ) |
                 modifyChar( Mask::Tail, text[ index + 1 ] );
 
             fromCharToHex( c[ 0 ], hex[ 0 ], hex[ 1 ] );
@@ -186,7 +186,7 @@ namespace json {
             c[ 1 ] =
                 ( modifyChar( Mask::Carry, text[ index + 1 ] ) << 6 ) |
                 modifyChar( Mask::Tail, text[ index + 2 ] );
-            
+
             fromCharToHex( c[ 0 ], hex[ 0 ], hex[ 1 ] );
             fromCharToHex( c[ 1 ], hex[ 2 ], hex[ 3 ] );
 
@@ -212,13 +212,7 @@ namespace json {
                 else if ( isUnicode24( text[ i ] ) )
                     result += decodeUnicode24( text, i );
                 else if ( isUnicode32( text[ i ] ) || isUnicode40( text[ i ] ) || isUnicode48( text[ i ] ) )
-                    throw exception::UnicodeDecoding( "Unsupported length of UTF-8 character" );
-                else if ( uchar( text[ i ] ) < 0x20 ) {
-                    if ( useExtension )
-                        result += decodeByte( text[ i ] );
-                    else
-                        result += decodeUnicode8( text, i );
-                }
+                    throw exception::Unicode( "Unsupported length of UTF-8 character" );
                 else switch ( text[ i ] ) {
                 case '"':
                 case '\\':
@@ -241,7 +235,15 @@ namespace json {
                     result += "\\t";
                     break;
                 default:
-                    result += text[ i ];
+                    if ( uchar( text[ i ] ) < 0x20 ) {
+                        if ( useExtension )
+                            result += decodeByte( text[ i ] );
+                        else
+                            result += decodeUnicode8( text, i );
+                    }
+                    else
+                        result += text[ i ];
+                    break;
                 }
             }
             return result;

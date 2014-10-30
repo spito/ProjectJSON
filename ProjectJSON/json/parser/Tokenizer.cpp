@@ -190,7 +190,12 @@ namespace json {
             }
             /*            if ( !Unicode::fromHexToChar( hex[0], hex[1], encoded ) )
             throw exception::InternalError( "unicode decoding failed", before );*/
-            return Unicode::encode( unicode );
+            try {
+                return Unicode::encode( unicode );
+            }
+            catch ( exception::Unicode &ex ) {
+                throw exception::UnicodeEncoding( ex, before );
+            }
         }
 
         // TODO: check needed

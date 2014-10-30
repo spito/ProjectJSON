@@ -6,41 +6,53 @@
 namespace json {
     namespace exception {
 
-        class UnicodeEncoding : public Exception {
+        class Unicode : public Exception {
             std::string _msg;
-        public:
-            UnicodeEncoding( const char *msg ) :
+        protected:
+            Unicode( const char *prefix, const char *msg ) :
                 Exception( "" ),
-                _msg( "Unicode encoding error - " )
+                _msg( prefix )
             {
                 _msg += msg;
             }
+        public:
+            Unicode( const char *msg ) :
+                Exception( "" ),
+                _msg( msg )
+            {}
 
             const char *what() const JSON_NOEXCEPT override{
                 return _msg.c_str();
             }
-
             Position position() const JSON_NOEXCEPT override{
                 return Position::nowhere();
+            }
+
+        };
+
+        class UnicodeEncoding : public Unicode {
+            Position _position;
+        public:
+            UnicodeEncoding( const Unicode &ex, Position p ) :
+                Unicode( "Unicode encoding error - ", ex.what() ),
+                _position( std::move( p ) )
+            {}
+
+            Position position() const JSON_NOEXCEPT override{
+                return _position;
             }
         };
 
-        class UnicodeDecoding : public Exception {
-            std::string _msg;
+        class UnicodeDecoding : public Unicode {
+            Position _position;
         public:
-            UnicodeDecoding( const char *msg ) :
-                Exception( "" ),
-                _msg( "Unicode decoding error - " )
-            {
-                _msg += msg;
-            }
-
-            const char *what() const JSON_NOEXCEPT override{
-                return _msg.c_str();
-            }
+            UnicodeDecoding( const Unicode &ex, Position p ) :
+                Unicode( "Unicode decoding error - ", ex.what() ),
+                _position( std::move( p ) )
+            {}
 
             Position position() const JSON_NOEXCEPT override{
-                return Position::nowhere();
+                return _position;
             }
         };
     }
