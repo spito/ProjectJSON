@@ -126,11 +126,14 @@
     <ClInclude Include="json\exception\Unicode.h">
       <Filter>Header Files\json\exception</Filter>
     </ClInclude>
+    <ClInclude Include="json\ReversedArray.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="json\objects\Charset.h">
+      <Filter>Header Files\json</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="json\parser\Token.cpp">
       <Filter>Source Files\json\parser</Filter>
     </ClCompile>
@@ -152,12 +155,13 @@
     <ClCompile Include="tests\main-test.cpp">
       <Filter>test</Filter>
     </ClCompile>
-    <ClCompile Include="json\Unicode.cpp">
-      <Filter>Source Files\json</Filter>
-    </ClCompile>
     <ClCompile Include="tests\unicode-tests.cpp">
       <Filter>test</Filter>
     </ClCompile>
+    <ClCompile Include="json\Unicode.cpp">
+      <Filter>Source Files\json</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Readme.txt" />

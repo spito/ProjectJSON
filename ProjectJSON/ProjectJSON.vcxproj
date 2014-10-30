@@ -119,6 +119,7 @@
     <ClInclude Include="json\objects\Array.h" />
     <ClInclude Include="json\objects\BaseObject.h" />
     <ClInclude Include="json\objects\Bool.h" />
+    <ClInclude Include="json\objects\Charset.h" />
     <ClInclude Include="json\objects\Integer.h" />
     <ClInclude Include="json\objects\Null.h" />
     <ClInclude Include="json\objects\Object.h" />
@@ -132,6 +133,7 @@
     <ClInclude Include="json\parser\Token.h" />
     <ClInclude Include="json\parser\Tokenizer.h" />
     <ClInclude Include="json\Position.h" />
+    <ClInclude Include="json\ReversedArray.h" />
     <ClInclude Include="json\Unicode.h" />
     <ClInclude Include="tests\catch.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
