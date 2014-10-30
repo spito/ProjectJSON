@@ -126,9 +126,6 @@
     <ClInclude Include="json\exception\Unicode.h">
       <Filter>Header Files\json\exception</Filter>
     </ClInclude>
-    <ClInclude Include="json\ReversedArray.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="json\objects\Charset.h">
       <Filter>Header Files\json</Filter>
     </ClInclude>

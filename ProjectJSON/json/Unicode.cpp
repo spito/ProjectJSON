@@ -1,6 +1,5 @@
 #include "Unicode.h"
 #include "exceptions.h"
-#include "ReversedArray.h"
 
 #include <cctype>
 #include <array>
