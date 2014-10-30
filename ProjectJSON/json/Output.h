@@ -11,11 +11,13 @@ namespace json {
         std::ostream &_out;
         const objects::Ptr _ptr;
         const std::string _padding;
+        Charset _charset;
     public:
-        Output( std::ostream &out, const objects::Ptr ptr ) :
+        Output( std::ostream &out, const objects::Ptr ptr, Charset charset = Charset::ASCII ) :
             _out( out ),
             _ptr( ptr ),
-            _padding( "    " )
+            _padding( "    " ),
+            _charset( charset )
         {}
 
         Output( const Output & ) = delete;
@@ -102,7 +104,7 @@ namespace json {
         }
 
         void flushString( const objects::String *s ) {
-            _out << s->toString();
+            _out << s->toString( _charset );
         }
 
         void padding( int layer ) {

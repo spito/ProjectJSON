@@ -1,29 +1,30 @@
 #include "Unicode.h"
 #include "exceptions.h"
+#include "ReversedArray.h"
 
 #include <cctype>
+#include <array>
 
 namespace json {
     namespace Unicode {
 
         enum class Mask : uchar {
-            Carry = 0x03,
             Tail = 0x3f,
-            U8 = 0x7f,
-            U16 = 0x1f,
-            U24 = 0x0f,
-            U32 = 0x07,
-            U40 = 0x03,
-            U48 = 0x01
+            U8   = 0x7f,
+            U16  = 0x1f,
+            U24  = 0x0f,
+            U32  = 0x07,
+            U40  = 0x03,
+            U48  = 0x01
         };
         enum class Prefix : uchar {
             Tail = 0x80,
-            U8 = 0,
-            U16 = 0xc0,
-            U24 = 0xe0,
-            U32 = 0xf0,
-            U40 = 0xf8,
-            U48 = 0xfc
+            U8   = 0,
+            U16  = 0xc0,
+            U24  = 0xe0,
+            U32  = 0xf0,
+            U40  = 0xf8,
+            U48  = 0xfc
         };
 
         bool hex2char( char c, uchar &u ) {
@@ -49,7 +50,6 @@ namespace json {
 
             return ( uppercase ? 'A' : 'a' ) - 10 + c;
         }
-
 
         bool fromHexToChar( char higher, char lower, uchar &out ) {
 
@@ -78,141 +78,190 @@ namespace json {
         inline uchar modifyChar( Mask mask, uchar c ) {
             return uchar( mask ) & c;
         }
+        
+        bool isFirstPart( std::string unicode ) {
+            for ( char &c : unicode )
+                c = char( std::toupper( c ) );
 
-        std::string encode( uchar c ) {
+            return unicode >= "D800" && unicode <= "DBFF";
+        }
+
+        bool isSecondPart( std::string unicode ) {
+            for ( char &c : unicode )
+                c = char( std::toupper( c ) );
+
+            return unicode >= "DC00" && unicode <= "DFFF";
+        }
+
+        class ConversionTable {
+
+            class Proxy {
+                int _shift;
+                uint32_t &_ref;
+            public:
+                Proxy( int shift, uint32_t &ref ) :
+                    _shift( shift ),
+                    _ref( ref )
+                {}
+
+                Proxy &operator=( uchar value ) {
+                    uint32_t mask = ~( uint32_t( 0xFF ) << _shift );
+                    _ref &= mask;
+                    _ref |= uint32_t( value ) << _shift;
+                    return *this;
+                }
+                Proxy &operator=( const Proxy & ) = delete;
+            };
+
+            int _base;
+            uint32_t _code;
+        public:
+            uint32_t code() const {
+                return _code;
+            }
+
+            uint32_t &code() {
+                return _code;
+            }
+
+            void base( int b ) {
+                _base = b;
+            }
+
+            void shrinkUTF8() {
+                uint32_t mask = uint32_t( Mask::Tail );
+                uint32_t head = uint32_t( 3 ) << 6;
+                uint32_t tailMask = uint32_t( 3 ) << 6;
+                uint32_t tail = uint32_t( 1 ) << 7;
+                uint32_t tailErase = ~uint32_t( 0xff );
+
+                while ( ( _code & tailMask ) == tail ) {
+                    _code = ( _code & mask ) | ( ( _code & tailErase ) >> 2 );
+                    mask = ( mask << 6 ) | mask;
+                    tail <<= 6;
+                    tailMask <<= 6;
+                    tailErase <<= 6;
+                    head = (( head >> 1 ) | head) << 6;
+                }
+                _code &= ~head;
+            }
+
+            Proxy operator[]( size_t index ) {
+                return Proxy( 8 * ( _base - index - 1 ), _code );
+            }
+
+            ConversionTable( int base ) :
+                _base( base ),
+                _code( 0 )
+            {}
+        };
+
+        std::string getUTF8( uint32_t unicode ) {
             std::string result;
 
-            if ( c < 0x80 )
-                result += modifyChar( Prefix::U8, Mask::U8, c );
-            else {
-                result += modifyChar( Prefix::U16, Mask::U16, c >> 6 );
-                result += modifyChar( Prefix::Tail, Mask::Tail, c );
+            if ( unicode < 0x80 )
+                result += modifyChar( Prefix::U8, Mask::U8, uchar( unicode ) );
+            else if ( unicode < 0x800 ) {
+                result += modifyChar( Prefix::U16, Mask::U16, uchar( unicode >> 6 ) );
+                result += modifyChar( Prefix::Tail, Mask::Tail, uchar( unicode ) );
             }
+            else if ( unicode < 0x10000 ) {
+                result += modifyChar( Prefix::U24, Mask::U24, uchar( unicode >> 12 ) );
+                result += modifyChar( Prefix::Tail, Mask::Tail, uchar( unicode >> 6 ) );
+                result += modifyChar( Prefix::Tail, Mask::Tail, uchar( unicode ) );
+            }
+            else if ( unicode < 0x10FFFF ) {
+                result += modifyChar( Prefix::U32, Mask::U32, uchar( unicode >> 18 ) );
+                result += modifyChar( Prefix::Tail, Mask::Tail, uchar( unicode >> 12 ) );
+                result += modifyChar( Prefix::Tail, Mask::Tail, uchar( unicode >> 6 ) );
+                result += modifyChar( Prefix::Tail, Mask::Tail, uchar( unicode ) );
+            }
+            else
+                throw exception::Unicode( "code out of range" );
             return result;
         }
 
-        std::string encode( uchar c1, uchar c2 ) {
-            std::string result;
-            if ( c1 < 0x08 ) {
-                result +=
-                    modifyChar( Prefix::U16, Mask::U16, c1 << 2 ) |
-                    modifyChar( Prefix::U16, Mask::U16, c2 >> 6 );
-                result +=
-                    modifyChar( Prefix::Tail, Mask::Tail, c2 );
-            }
-            else {
-                result +=
-                    modifyChar( Prefix::U24, Mask::U24, c1 >> 4 );
-                result +=
-                    modifyChar( Prefix::Tail, Mask::Tail, c1 << 2 ) |
-                    modifyChar( Prefix::Tail, Mask::Tail, c2 >> 6 );
-                result +=
-                    modifyChar( Prefix::Tail, Mask::Tail, c2 );
-            }
-            return result;
-        }
+        std::string getUTF8( const std::string &input ) {
 
-        std::string encode( const std::string &input ) {
+            std::vector< uchar > hex;
 
-            if ( input.size() == 2 ) {
+            if ( input.size() % 2 )
+                throw exception::Unicode( "Unsupported length of unicode character" );
+
+
+            for ( auto i = input.begin(); i != input.end(); i += 2 ) {
                 uchar c;
-                if ( !fromHexToChar( input[ 0 ], input[ 1 ], c ) )
+                if ( !fromHexToChar( *i, *( i + 1 ), c ) )
                     throw exception::Unicode( "Invalid input format" );
-                return encode( c );
+                hex.push_back( c );
             }
-            if ( input.size() == 4 ) {
-                uchar c1, c2;
-                if ( !fromHexToChar( input[ 0 ], input[ 1 ], c1 ) ||
-                     !fromHexToChar( input[ 2 ], input[ 3 ], c2 ) )
-                     throw exception::Unicode( "Invalid input format" );
-                return encode( c1, c2 );
+
+            ConversionTable table( 2 );
+
+            switch ( hex.size() ) {
+            case 1:
+                table.base( 1 );
+                table[0] = hex.front();
+                break;
+            case 2:
+                for ( size_t i = 0; i < 2; ++i )
+                    table[ i ] = hex[ i ];
+                break;
+            case 4:
+                for ( size_t i = 0; i < 2; ++i )
+                    table[ i ] = hex[ i ];
+                if ( table.code() >= 0xD800 && table.code() <= 0xDBFF ) {
+                    ConversionTable helper( 2 );
+                    for ( size_t i = 0; i < 2; ++i )
+                        helper[ i ] = hex[ i + 2 ];
+
+                    if ( helper.code() >= 0xDC00 && helper.code() <= 0xDFFF )
+                        table.code() = ( table.code() << 10 ) + helper.code() - 0x35FDC00;
+                }
+                break;
+            default:
+                throw exception::Unicode( "Unsupported length of unicode character" );
             }
-            throw exception::Unicode( "Unsupported length of unicode character" );
+            return getUTF8( table.code() );
         }
 
-        inline bool isUnicode16( uchar c ) {
-            return ( ~uchar( Mask::U16 ) & c ) == uchar( Prefix::U16 );
+        inline bool isUnicode( uchar c ) {
+            return ( uchar( Prefix::Tail ) & c ) == uchar( Prefix::Tail );
         }
 
-        inline bool isUnicode24( uchar c ) {
-            return ( ~uchar( Mask::U24 ) & c ) == uchar( Prefix::U24 );
+        inline int unicodeLength( uchar c ) {
+            int length = 0;
+            while ( uchar( Prefix::Tail ) & c ) {
+                c <<= 1;
+                ++length;
+            }
+            return length;
         }
 
-        inline bool isUnicode32( uchar c ) {
-            return ( ~uchar( Mask::U32 ) & c ) == uchar( Prefix::U32 );
+        std::string unicodeToAscii( const std::string &text, size_t &index ) {
+            int length = unicodeLength( text[ index ] );
+            if ( length > 4 )
+                throw exception::Unicode( "Unsupported length of UTF-8 character" );
+
+            if ( text.size() < index + length )
+                length = text.size() - index;
+
+            ConversionTable table( length );
+
+            for ( int i = 0; i < length; ++i )
+                table[ i ] = text[ index + i ];
+            table.shrinkUTF8();
+            index += length - 1;
+
+            return getUnicodeCode( table.code() );
         }
 
-        inline bool isUnicode40( uchar c ) {
-            return ( ~uchar( Mask::U40 ) & c ) == uchar( Prefix::U40 );
-        }
-
-        inline bool isUnicode48( uchar c ) {
-            return ( ~uchar( Mask::U48 ) & c ) == uchar( Prefix::U48 );
-        }
-
-        std::string decodeUnicode8( const std::string &text, size_t &index ) {
-            char hex[ 3 ] = { 0 };
-            fromCharToHex( text[ index ], hex[ 0 ], hex[ 1 ] );
-            return std::string( "\\u00" ) + hex;
-        }
-
-        std::string decodeUnicode16( const std::string &text, size_t &index ) {
-            char hex[ 5 ] = { 0 };
-
-            char c[ 2 ];
-            c[ 0 ] =
-                modifyChar( Mask::U16, text[ index ] ) >> 2;
-
-            c[ 1 ] =
-                ( modifyChar( Mask::Carry, text[ index ] ) << 6 ) |
-                modifyChar( Mask::Tail, text[ index + 1 ] );
-
-            fromCharToHex( c[ 0 ], hex[ 0 ], hex[ 1 ] );
-            fromCharToHex( c[ 1 ], hex[ 2 ], hex[ 3 ] );
-
-            ++index;
-
-            return std::string( "\\u" ) + hex;
-        }
-
-        std::string decodeUnicode24( const std::string &text, size_t &index ) {
-            char hex[ 5 ] = { 0 };
-
-            char c[ 2 ];
-            c[ 0 ] =
-                ( modifyChar( Mask::U24, text[ index ] ) << 4 ) |
-                ( modifyChar( Mask::Tail, text[ index + 1 ] ) >> 2 );
-
-            c[ 1 ] =
-                ( modifyChar( Mask::Carry, text[ index + 1 ] ) << 6 ) |
-                modifyChar( Mask::Tail, text[ index + 2 ] );
-
-            fromCharToHex( c[ 0 ], hex[ 0 ], hex[ 1 ] );
-            fromCharToHex( c[ 1 ], hex[ 2 ], hex[ 3 ] );
-
-            ++index;
-            ++index;
-
-            return std::string( "\\u" ) + hex;
-        }
-
-        std::string decodeByte( uchar c ) {
-            char hex[ 3 ] = { 0 };
-            fromCharToHex( c, hex[ 0 ], hex[ 1 ] );
-            return std::string( "\\x" ) + hex;
-        }
-
-
-        std::string decode( const std::string &text, bool useExtension ) {
+        std::string toAscii( const std::string &text ) {
             std::string result;
 
             for ( size_t i = 0; i < text.size(); ++i ) {
-                if ( isUnicode16( text[ i ] ) )
-                    result += decodeUnicode16( text, i );
-                else if ( isUnicode24( text[ i ] ) )
-                    result += decodeUnicode24( text, i );
-                else if ( isUnicode32( text[ i ] ) || isUnicode40( text[ i ] ) || isUnicode48( text[ i ] ) )
-                    throw exception::Unicode( "Unsupported length of UTF-8 character" );
+                if ( isUnicode( text[ i ] ) )
+                    result += unicodeToAscii( text, i );
                 else switch ( text[ i ] ) {
                 case '"':
                 case '\\':
@@ -235,18 +284,71 @@ namespace json {
                     result += "\\t";
                     break;
                 default:
-                    if ( uchar( text[ i ] ) < 0x20 ) {
-                        if ( useExtension )
-                            result += decodeByte( text[ i ] );
-                        else
-                            result += decodeUnicode8( text, i );
-                    }
+                    if ( uchar( text[ i ] ) < 0x20 )
+                        result += getUnicodeCode( text[ i ] );
                     else
                         result += text[ i ];
                     break;
                 }
             }
             return result;
+        }
+
+        std::string escapeSpecials( const std::string &text ) {
+            std::string result;
+            for ( char c : text ) {
+                switch ( c ) {
+                case '"':
+                case '\\':
+                    result += '\\';
+                    result += c;
+                    break;
+                case '\b':
+                    result += "\\b";
+                    break;
+                case '\f':
+                    result += "\\f";
+                    break;
+                case '\n':
+                    result += "\\n";
+                    break;
+                case '\r':
+                    result += "\\r";
+                    break;
+                case '\t':
+                    result += "\\t";
+                    break;
+                default:
+                    if ( uchar( c ) < 0x20 )
+                        result += getUnicodeCode( c );
+                    else
+                        result += c;
+                    break;
+                }
+            }
+            return result;
+        }
+
+        std::string getUnicodeCode( uint32_t code ) {
+
+            std::array< char, 5 > hexLower = { 0 };
+            std::array< char, 5 > hexHigher = { 0 };
+
+            if ( code < 0x10000 ) {
+                fromCharToHex( uchar( code >> 8 ), hexLower[ 0 ], hexLower[ 1 ] );
+                fromCharToHex( uchar( code ), hexLower[ 2 ], hexLower[ 3 ] );
+                return std::string( "\\u" ) + hexLower.data();
+            }
+            if ( code <= 0x10FFFF ) {
+                uint32_t higher = ( code >> 10 ) + 0xD7C0;
+                uint32_t lower = ( code & 0x3FF ) + 0xDC00;
+                fromCharToHex( uchar( higher >> 8 ), hexHigher[ 0 ], hexHigher[ 1 ] );
+                fromCharToHex( uchar( higher ), hexHigher[ 2 ], hexHigher[ 3 ] );
+                fromCharToHex( uchar( lower >> 8 ), hexLower[ 0 ], hexLower[ 1 ] );
+                fromCharToHex( uchar( lower ), hexLower[ 2 ], hexLower[ 3 ] );
+                return std::string( "\\u" ) + hexHigher.data() + "\\u" + hexLower.data();
+            }
+            throw exception::Unicode( "invalid unicode character" );
         }
     }
 }

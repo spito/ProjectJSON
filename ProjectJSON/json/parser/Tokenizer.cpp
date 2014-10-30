@@ -92,21 +92,23 @@ namespace json {
             }
         }
 
+        bool Tokenizer::processWord( const char* expected ) {
+            for ( ; *expected; ++expected ) {
+                Position p = position();
+                char given = _input.read();
+                if ( given != *expected ) {
+                    _input.position( p );
+                    return false;
+                }
+            }
+            return true;
+        }
+
         void Tokenizer::processWord( Token::Type type, Token &token ) {
 
             Position before = position();
-            std::string word;
 
-            while ( true ) {
-                Position p = position();
-                char given = _input.read();
-                if ( !std::isalpha( given ) ) {
-                    _input.position( p );
-                    break;
-                }
-                word += given;
-            }
-            if ( Token::value( type ) == word )
+            if ( processWord( Token::value( type ) ) )
                 token = Token( type, before );
             else
                 token = Token( Token::Type::Invalid, before );
@@ -155,14 +157,10 @@ namespace json {
                         rawToken.push_back( '\t' );
                         break;
                     case 'u':
-                        rawToken += processUnicode(4);
-                        break;
-                    // This is only our extension
-                    case 'x':
-                        rawToken += processUnicode( 2 );
+                        rawToken += processUnicode();
                         break;
                     default:
-                        throw exception::InvalidCharacter( c, "\"\\/bfnrtux", p );
+                        throw exception::InvalidCharacter( c, "\"\\/bfnrtu", p );
                     }
                     special = false;
                 }
@@ -178,20 +176,38 @@ namespace json {
             token = Token( Token::Type::String, rawToken, before );
         }
 
-        std::string Tokenizer::processUnicode(int length) {
+        std::string Tokenizer::processUnicodeSequence() {
             std::string unicode;
-            Position before = position();
-
-            for ( int i = 0; i < length; ++i ) {
+            for ( int i = 0; i < 4; ++i ) {
                 Position p = position();
                 unicode += _input.read();
                 if ( !std::isxdigit( unicode.back() ) )
-                    throw exception::InvalidCharacter( unicode.back(), "0123456789abcdef", p );
+                    throw exception::InvalidCharacter( unicode.back(), "0123456789abcdefABCDEF", p );
             }
-            /*            if ( !Unicode::fromHexToChar( hex[0], hex[1], encoded ) )
-            throw exception::InternalError( "unicode decoding failed", before );*/
+            return unicode;
+        }
+
+        std::string Tokenizer::processUnicode() {
+            Position before = position();
             try {
-                return Unicode::encode( unicode );
+
+                std::string first = processUnicodeSequence();
+                std::string second;
+
+                if ( Unicode::isFirstPart( first ) ) {
+                    Position before = position();
+                    if ( !processWord( "\\u" ) )
+                        throw exception::UnicodeEncoding( "Expected unicode in escape sequenced format", before );
+                    second = processUnicodeSequence();
+
+                    // roll back if needed
+                    if ( !Unicode::isSecondPart( second ) ) {
+                        _input.position( before );
+                        second.clear();
+                    }
+                }
+
+                return Unicode::getUTF8( first + second );
             }
             catch ( exception::Unicode &ex ) {
                 throw exception::UnicodeEncoding( ex, before );

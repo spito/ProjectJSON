@@ -18,6 +18,10 @@ int main( int argc, char **argv ) {
 
         std::cout << "Dump of the JSON structure: " << std::endl;
         std::cout << handle << std::endl;
+
+        std::ofstream out( "output.json" );
+        json::Output o( out, handle.get(), json::Charset::UTF8 );
+        o.flush();
     }
     catch ( std::bad_alloc & ) {
         std::cerr << "Allocation has failed!" << std::endl;

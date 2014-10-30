@@ -45,7 +45,9 @@ namespace json {
             void processString( Token & );
             void processNumber( Token & );
             void processWord( Token::Type, Token & );
-            std::string processUnicode( int );
+            bool processWord( const char * );
+            std::string processUnicode();
+            std::string processUnicodeSequence();
         };
     }
 }

@@ -11,7 +11,7 @@ namespace json {
                 BaseObject( Type::Null )
             {}
 
-            std::string toString() const override {
+            std::string toString( Charset = Charset::ASCII ) const override {
                 return "null";
             }
         };

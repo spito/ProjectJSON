@@ -14,13 +14,13 @@ namespace json {
                 BaseObject( Type::Array )
             {}
 
-            std::string toString() const override {
+            std::string toString( Charset charset = Charset::ASCII ) const override {
                 std::string s( "[ " );
                 int i = 0;
                 for ( const auto &o : _objects ) {
                     if ( i++ )
                         s += ", ";
-                    s += o->toString();
+                    s += o->toString( charset );
                 }
                 return s + " ]";
             }

@@ -30,7 +30,7 @@ namespace json {
                     _given = given;
                 else {
                     char c[ 3 ] = {0,};
-                    Unicode::fromCharToHex( given, c[ 0 ], c[ 1 ] );
+                    json::Unicode::fromCharToHex( given, c[ 0 ], c[ 1 ] );
                     _given = "0x";
                     _given += c;
                 }

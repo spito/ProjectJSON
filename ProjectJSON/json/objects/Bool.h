@@ -13,7 +13,7 @@ namespace json {
                 _value( value )
             {}
 
-            std::string toString() const override {
+            std::string toString( Charset = Charset::ASCII ) const override {
                 return value() ? "true" : "false";
             }
 

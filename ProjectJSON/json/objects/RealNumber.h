@@ -15,7 +15,7 @@ namespace json {
                 _value( d )
             {}
 
-            std::string toString() const override {
+            std::string toString( Charset = Charset::ASCII ) const override {
                 std::ostringstream s;
                 s << value();
                 return s.str();

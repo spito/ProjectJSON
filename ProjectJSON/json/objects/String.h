@@ -28,8 +28,14 @@ namespace json {
                 return *this;
             }
 
-            std::string toString() const override {
-                return '"' + Unicode::decode( value() ) + '"';
+            std::string toString( Charset charset = Charset::ASCII ) const override {
+                switch ( charset ) {
+                case Charset::UTF8:
+                    return '"' + Unicode::escapeSpecials( value() ) + '"';
+                case Charset::ASCII:
+                default:
+                    return '"' + Unicode::toAscii( value() ) + '"';
+                }
             }
 
             std::string &value() {

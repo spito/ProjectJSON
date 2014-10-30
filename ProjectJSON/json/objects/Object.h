@@ -15,15 +15,15 @@ namespace json {
                 BaseObject( Type::Object )
             {}
 
-            std::string toString() const override {
+            std::string toString( Charset charset = Charset::ASCII ) const override {
                 std::string result( "{ " );
                 int i = 0;
                 for ( const auto &p : _objects ) {
                     if ( i++ )
                         result += ", ";
-                    result += p.first.toString();
+                    result += p.first.toString( charset );
                     result += " : ";
-                    result += p.second->toString();
+                    result += p.second->toString( charset );
                 }
                 return result + " }";
             }

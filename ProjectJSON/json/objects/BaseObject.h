@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Type.h"
+#include "Charset.h"
 #include "../exceptions.h"
 
 #include <memory>
@@ -39,7 +40,7 @@ namespace json {
                 return dynamic_cast<Target *>( this );
             }
 
-            virtual std::string toString() const = 0;
+            virtual std::string toString( Charset = Charset::ASCII ) const = 0;
         };
 
         using Handle = std::unique_ptr < BaseObject >;

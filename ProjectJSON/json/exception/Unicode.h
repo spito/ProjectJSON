@@ -38,6 +38,11 @@ namespace json {
                 _position( std::move( p ) )
             {}
 
+            UnicodeEncoding( const char *msg, Position p ) :
+                Unicode( "Unicode encoding error - ", msg ),
+                _position( std::move( p ) )
+            {}
+
             Position position() const JSON_NOEXCEPT override{
                 return _position;
             }
