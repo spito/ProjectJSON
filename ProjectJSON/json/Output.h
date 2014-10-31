@@ -9,11 +9,11 @@ namespace json {
     
     class Output {
         std::ostream &_out;
-        const objects::Ptr _ptr;
+        objects::ConstPtr _ptr;
         const std::string _padding;
         Charset _charset;
     public:
-        Output( std::ostream &out, const objects::Ptr ptr, Charset charset = Charset::ASCII ) :
+        Output( std::ostream &out, objects::ConstPtr ptr, Charset charset = Charset::ASCII ) :
             _out( out ),
             _ptr( ptr ),
             _padding( "    " ),
@@ -27,7 +27,7 @@ namespace json {
             flushLayer( _ptr, 0 );
         }
     private:
-        void flushLayer( const objects::Ptr ptr, int layer, bool aplyLayerNow = true ) {
+        void flushLayer( objects::ConstPtr ptr, int layer, bool aplyLayerNow = true ) {
             if ( aplyLayerNow )
                 padding( layer );
 
@@ -112,11 +112,11 @@ namespace json {
                 _out << _padding;
         }
     };
+    inline std::ostream &operator<<( std::ostream &out, const json::objects::Handle &handle ) {
+        if ( handle ) {
+            json::Output( out, handle.get() ).flush();
+        }
+        return out;
+    }
 }
 
-inline std::ostream &operator<<( std::ostream &out, const json::objects::Handle &handle ) {
-    if ( handle ) {
-        json::Output( out, handle.get() ).flush();
-    }
-    return out;
-}

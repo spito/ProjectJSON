@@ -37,7 +37,12 @@ namespace json {
 
             template< typename Target >
             Target *cast() {
-                return dynamic_cast<Target *>( this );
+                return dynamic_cast< Target * >( this );
+            }
+
+            template< typename Target >
+            const Target *cast() const {
+                return dynamic_cast< const Target * >( this );
             }
 
             virtual std::string toString( Charset = Charset::ASCII ) const = 0;
@@ -45,5 +50,6 @@ namespace json {
 
         using Handle = std::unique_ptr < BaseObject >;
         using Ptr = BaseObject *;
+        using ConstPtr = const BaseObject *;
     }
 }

@@ -200,6 +200,13 @@ namespace json {
                 return !( *this == o );
             }
         };
+        inline std::ostream &operator<<( std::ostream &out, Token::Type type ) {
+            out << json::parser::Token::typeName( type );
+            return out;
+        }
+        inline std::ostream &operator<<( std::ostream &out, Token token ) {
+            return out << token.type();
+        }
     }
 }
 
@@ -209,6 +216,3 @@ namespace std {
         lhs.swap( rhs );
     }
 }
-
-std::ostream &operator<<( std::ostream &, json::parser::Token );
-std::ostream &operator<<( std::ostream &, json::parser::Token::Type );
