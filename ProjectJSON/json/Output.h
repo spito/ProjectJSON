@@ -112,11 +112,11 @@ namespace json {
                 _out << _padding;
         }
     };
-    inline std::ostream &operator<<( std::ostream &out, const json::objects::Handle &handle ) {
-        if ( handle ) {
-            json::Output( out, handle.get() ).flush();
-        }
-        return out;
+}
+inline std::ostream &operator<<( std::ostream &out, const json::objects::Handle &handle ) {
+    if ( handle ) {
+        json::Output( out, handle.get() ).flush();
     }
+    return out;
 }
 
