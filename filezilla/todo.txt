@@ -1,6 +1,7 @@
 OpenHub site: https://www.openhub.net/p/filezilla
 SourceForge site: http://sourceforge.net/projects/filezilla/
-Source code: https://filezilla-project.org/sourcecode.php
+Source code: http://sourceforge.net/projects/filezilla/files/FileZilla_Client/3.9.0.6/FileZilla_3.9.0.6_src.tar.bz2/download
+Compilation instructions: https://wiki.filezilla-project.org/Client_Compile
 
 1) Static analysis with CPPcheck. (Ravi)
 2) Static analysis with PREfast. (Martin)
