@@ -1,0 +1,61 @@
+\documentclass[11pt]{article}
+
+% ===== LOADING PACKAGES =====
+% language settings, main documnet language last
+\usepackage[english]{babel}
+% enabling new fonts support (nicer)
+\usepackage{lmodern}
+% setting input encoding
+\usepackage[utf8]{inputenc}
+% setting output encoding
+\usepackage[T1]{fontenc}
+% set page margins
+\usepackage[top=2.5cm, bottom=2.5cm, left=2cm, right=2cm]{geometry}	% pc version
+% package to make bullet list nicer
+\usepackage{enumitem}
+% setting custom colors for links
+\usepackage{xcolor}
+\definecolor{dark-red}{rgb}{0.6,0.15,0.15}
+\definecolor{dark-green}{rgb}{0.15,0.4,0.15}
+\definecolor{medium-blue}{rgb}{0,0,0.5}
+% generating hyperlinks in document
+\usepackage{url}
+\usepackage[pdfpagelabels,    % write arabic labels to all pages
+            unicode,          % allow unicode characters in links
+            colorlinks=true,  % use colored links instead of boxed
+            linkcolor={dark-red},
+            citecolor={dark-green},
+            urlcolor={medium-blue}
+            ]{hyperref}
+
+\begin{document}
+\title{Analysis of FileZilla codebase}
+\date{\today}
+\author{Ravibabu Matta, Martin Ukrop, Jiří Weiser}
+\maketitle
+
+\section{Introduction}
+
+Short intro.
+
+\section{Static analysis using CPPcheck}
+
+Contetns to be added.
+
+\section{Static analysis using PreFast}
+
+Contetns to be added.
+
+\section{Dynamic analysis using Valgrind}
+
+Contetns to be added.
+
+\section{Code inspection with regards to password processing}
+
+Contetns to be added.
+
+\section{Conclusions}
+
+Contetns to be added.
+
+\end{document}

@@ -1,0 +1,10 @@
+OpenHub site: https://www.openhub.net/p/filezilla
+SourceForge site: http://sourceforge.net/projects/filezilla/
+Source code: https://filezilla-project.org/sourcecode.php
+
+1) Static analysis with CPPcheck. (Ravi)
+2) Static analysis with PREfast. (Martin)
+3) Dynamic analysis with Valgrind. (Ravi)
+4) Thread safety checking using Helgrind or other tools.
+5) Manual code inspection concerning the passwords saved in FileZilla. (Martin)
+6) Check known security bugs concerning SSL/TLS.

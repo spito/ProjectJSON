@@ -1,3 +1,10 @@
+# FileZilla sources
+filezilla/src
+
+# report PDFs
+*.pdf
+
+# Assortment of various tmp files
 *.exe
 *.ilk
 *.pdb
