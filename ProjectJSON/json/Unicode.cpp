@@ -77,20 +77,6 @@ namespace json {
         inline uchar modifyChar( Mask mask, uchar c ) {
             return uchar( mask ) & c;
         }
-        
-        bool isFirstPart( std::string unicode ) {
-            for ( char &c : unicode )
-                c = char( std::toupper( c ) );
-
-            return unicode >= "D800" && unicode <= "DBFF";
-        }
-
-        bool isSecondPart( std::string unicode ) {
-            for ( char &c : unicode )
-                c = char( std::toupper( c ) );
-
-            return unicode >= "DC00" && unicode <= "DFFF";
-        }
 
         class ConversionTable {
 
@@ -140,7 +126,7 @@ namespace json {
                     tail <<= 6;
                     tailMask <<= 6;
                     tailErase <<= 6;
-                    head = (( head >> 1 ) | head) << 6;
+                    head = ( ( head >> 1 ) | head ) << 6;
                 }
                 _code &= ~head;
             }
@@ -154,6 +140,33 @@ namespace json {
                 _code( 0 )
             {}
         };
+
+        bool isFirstPart( std::string unicode ) {
+            uchar c;
+            ConversionTable table( 2 );
+            if ( unicode.size() != 4 )
+                return false;
+
+            for ( int i = 0; i < 2; ++i ) {
+                fromHexToChar( unicode[ 2 * i ], unicode[ 2 * i + 1 ], c );
+                table[ i ] = c;
+            }
+            return table.code() >= 0xD800 && table.code() <= 0xDBFF;
+        }
+
+        bool isSecondPart( std::string unicode ) {
+            uchar c;
+            ConversionTable table( 2 );
+            if ( unicode.size() != 4 )
+                return false;
+
+            for ( int i = 0; i < 2; ++i ) {
+                fromHexToChar( unicode[ 2 * i ], unicode[ 2 * i + 1 ], c );
+                table[ i ] = c;
+            }
+
+            return table.code() >= 0xDC00 && table.code() <= 0xDFFF;
+        }
 
         std::string getUTF8( uint32_t unicode ) {
             std::string result;
@@ -203,15 +216,15 @@ namespace json {
                 table[0] = hex.front();
                 break;
             case 2:
-                for ( size_t i = 0; i < 2; ++i )
+                for ( int i = 0; i < 2; ++i )
                     table[ i ] = hex[ i ];
                 break;
             case 4:
-                for ( size_t i = 0; i < 2; ++i )
+                for ( int i = 0; i < 2; ++i )
                     table[ i ] = hex[ i ];
                 if ( table.code() >= 0xD800 && table.code() <= 0xDBFF ) {
                     ConversionTable helper( 2 );
-                    for ( size_t i = 0; i < 2; ++i )
+                    for ( int i = 0; i < 2; ++i )
                         helper[ i ] = hex[ i + 2 ];
 
                     if ( helper.code() >= 0xDC00 && helper.code() <= 0xDFFF )
