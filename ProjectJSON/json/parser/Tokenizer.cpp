@@ -218,7 +218,6 @@ namespace json {
             }
         }
 
-        // TODO: check needed
         void Tokenizer::processNumber( Token &token ) {
 
             Position before = position();
