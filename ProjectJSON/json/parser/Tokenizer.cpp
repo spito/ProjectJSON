@@ -32,8 +32,13 @@ namespace json {
 
         void Tokenizer::getToken( Token &token ) {
             _input.skipWhite();
-
             Position before = position();
+
+            if ( _input.eof() ) {
+                token = Token( Token::Type::EndOfFile, before );
+                return;
+            }
+
             char c = _input.readChar();
             switch ( c ) {
             case ',':
@@ -84,9 +89,6 @@ namespace json {
                 position( before );
                 processNumber( token );
                 return;
-            case char( -1 ) :
-                token = Token( Token::Type::EndOfFile, before );
-                return;
             default:
                 throw exception::InvalidCharacter( c, ",:{}[]tfn\"-0123456789", before );
             }
@@ -95,8 +97,7 @@ namespace json {
         bool Tokenizer::processWord( const char* expected ) {
             for ( ; *expected; ++expected ) {
                 Position p = position();
-                char given = _input.read();
-                if ( given != *expected ) {
+                if ( _input.eof() || _input.read() != *expected ) {
                     _input.position( p );
                     return false;
                 }
@@ -180,6 +181,9 @@ namespace json {
             std::string unicode;
             for ( int i = 0; i < 4; ++i ) {
                 Position p = position();
+                if ( _input.eof() )
+                    throw exception::EndOfFile( "0123456789abcdefABCDEF", p );
+
                 unicode += _input.read();
                 if ( !std::isxdigit( unicode.back() ) )
                     throw exception::InvalidCharacter( unicode.back(), "0123456789abcdefABCDEF", p );

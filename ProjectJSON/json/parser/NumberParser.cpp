@@ -11,7 +11,13 @@ namespace json {
             Position before;
             while ( true ) {
                 before = _input.position();
-                char c = _input.readChar();
+
+                char c{};
+
+                if ( _input.eof() )
+                    state = States::Quit;
+                else
+                    c = _input.readChar();
 
                 switch ( state ) {
                 case States::Init:

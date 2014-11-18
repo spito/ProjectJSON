@@ -66,7 +66,7 @@ namespace json {
             // get all type of characters
             char read() {
                 if ( eof() )
-                    return char( -1 );
+                    return '\0';
 
                 char c = _buffer[ _position.position() ];
 
