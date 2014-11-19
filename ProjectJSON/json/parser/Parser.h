@@ -22,7 +22,7 @@ namespace json {
 
         public:
             Parser( const std::string &json ) :
-                Parser( json, 100 )
+                Parser( json, limitRecursionDepth )
             {}
 
             Parser( const std::string &json, int maximalDepth ) :

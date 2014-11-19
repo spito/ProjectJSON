@@ -7,7 +7,7 @@ namespace json {
 
         void Parser::checkDepth( int depth ) {
             if ( depth >= _maximalDepth )
-                throw exception::InternalError( "stack limit", position() );
+                throw exception::InternalError( "stack limit reached", position() );
         }
 
 
