@@ -1,0 +1,53 @@
+Specification
+=============
+
+The JSON parser is able to parse JSON data format as it is presented
+at http://json.org including support of UTF-8 encoding. The input can be
+provided to the parser in the form of
+1) opened file (std::ifstream)
+2) path to a file (std::string)
+3) JSON in form of a string (std::string)
+
+If the parser is able to parse the input, it returns the tree of JSON
+objects. The type of the returned handle to the JSON tree is
+a std::unique_ptr< json::objects::BaseObjects > [1].
+The JSON objects tree can be flushed into std::ostream object
+or proceed by using methods for getting the type of an node
+in the JSON objects tree and manipulating with the node.
+
+If the parser is not able to parse the input an exception is thrown
+and later reported. There is a bunch of available exceptions:
+* EndOfFile       - Raised when end of file/string is reached while the parser
+                    was expecting to read more characters. The exception also
+                    reports the position of the file where the problem occurred.
+* InternalError   - Raised when internal error happens during parsing.
+                    Currently this exception may be thrown only when stack limit
+                    of recursion has been reached during parsing. This is because
+                    the limit of recursion is limited to 1000 recursion calls not
+                    to run out of stack given by an OS. The exception also
+                    reports the position of the file where the problem occurred.
+* InvalidFile     - Raised when provided file cannot be read.
+* InvalidCharacter- Raised when unexpected character reached during parsing tokens.
+                    The exception also reports the position of the file where
+                    the problem occurred.
+* InvalidToken    - Raised when unexpected token reached during generating JSON
+                    object tree. The exception also reports the position of the
+                    file where the problem occurred.
+* Unicode         - Raised when incorrect sequence of characters is reached.
+                    Only UTF-8 valid characters are supported. The exception
+                    may or may not specify where the problem was reached.
+                    By an incorrect sequence is meant any sequence of character
+                    which is not specified as valid by RFC 3629 [2].
+* std::bad_alloc  - Raised when no more memory can be allocated.
+
+Note that Unicode exceptions may be thrown also during flushing JSON tree into
+a file due to wrong encoded strings. Other exceptions are caught and reported
+by json::Factory class during processing. The stream used to reporting errors
+may be changed to any class derived from std::ostream aka std::ofstream
+or std::ostringstream; the default used stream is std::cerr.
+
+-------------------------------------------------------------------------------
+
+ * [1]  For more technical details look into the documentation:
+        http://en.cppreference.com/w/cpp/memory/unique_ptr
+ * [2]  http://tools.ietf.org/html/rfc3629
