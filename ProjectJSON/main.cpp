@@ -26,5 +26,8 @@ int main( int argc, char **argv ) {
     catch ( std::bad_alloc & ) {
         std::cerr << "Allocation has failed!" << std::endl;
     }
+    catch ( std::exception &ex ) {
+        std::cerr << "Internal error: " << ex.what() << std::endl;
+    }
     return 0;
 }
