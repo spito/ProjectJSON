@@ -16,7 +16,8 @@ or proceed by using methods for getting the type of an node
 in the JSON objects tree and manipulating with the node.
 
 If the parser is not able to parse the input an exception is thrown
-and later reported. There is a bunch of available exceptions:
+and later reported. The handle points to nullptr then.
+There is a bunch of available exceptions:
 * EndOfFile       - Raised when end of file/string is reached while the parser
                     was expecting to read more characters. The exception also
                     reports the position of the file where the problem occurred.
