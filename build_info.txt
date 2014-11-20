@@ -1,0 +1,24 @@
+Informations for building
+=========================
+
+The ProjectJSON can be build either by using Makefile and proper compiler
+or by using ProjectJSON.sln file and VS 2013 (or newer).
+
+The requirement for the compiler is simply reasonable support of C++11.
+Tested compilers are: MSVC (included in VS 2013), gcc version at least
+4.8.3, and clang version at least 3.4. The project may be also compiled
+with any compiler with support of following list of features:
+ *) r-value semantics
+ *) auto deriving types of variables
+ *) range-for loops
+ *) noexcept operator and specifier support
+ *) default and delete keywords extension
+ *) final and override contextual keywords
+ *) using keyword extension
+ *) enum classes
+ *) uniform-brace-initialization
+ *) lambda expressions
+ *) unrestricted unions
+ *) decltype keyword
+ *) trailing return type declaration
+ *) std::unique_ptr
