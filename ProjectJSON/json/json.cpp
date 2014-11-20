@@ -50,7 +50,7 @@ namespace json {
     template< typename T >
     Handle Factory::invokeParsing( T &t ) {
 
-        Handle handle( new objects::Null() );
+        Handle handle;
         try {
             parser::Parser p( t );
             handle = p.getTree();

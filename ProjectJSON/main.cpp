@@ -13,7 +13,7 @@ int main( int argc, char **argv ) {
 
         auto handle = factory.parseFile( argv[ 1 ] );
 
-        if ( !handle || handle->isNull() )
+        if ( !handle )
             return -1;
 
         std::cout << "Dump of the JSON structure: " << std::endl;
