@@ -1,0 +1,48 @@
+Problems in language
+====================
+
+1)  The parser is able to parse numbers which are not allowed by JSON standard.
+    Example:
+    -.1
+    Conclusion: No problems inside the code appeared, no memory leaks.
+
+2)  The parser should check the end of file after the last token. This check is not done.
+    Example:
+    true true
+    Conclusion: No problems inside the code appeared, no memory leaks.
+
+3)  The parser is not able to refuse unfinished string.
+    Example:
+    "
+    Conclusion: The parser is not able to recover from this bug and it leads
+    to segmentation fault.
+
+4)  The parser accepts characters inside string in range 0x00 - 0x1F which
+    it should refuse; there characters should be encoded in the unicode
+    escape sequence.
+
+5)  The parser is not capable to accept valid unicode escape sequence of characters
+    larger than 0xFFFF.
+    Example:
+    "\uD852\uDF62"
+    Conclusion: No problems inside the code appeared, no memory leaks.
+
+6)  The parser is not capable to accept valid unicode escape sequence of characters
+    less than 0xFFFF.
+    Example: (€ euro sign)
+    "\u20ac"
+    Conclusion: This leads into problem in the code due to exposition of a small
+    area of memory on the stack.
+
+
+Problems in the code
+====================
+
+1)  The function `shared_ptr<Json::String> Json::String::readStringFrom(istream &in)`
+    does not return value if the quotation mark is not reached.
+    This bug results into uninitialized std::shared_ptr< Json::String >
+    and therefore into the segmentation fault.
+
+2)  The function `void Json::String::parseHexaStringSequence(istream &in, stringstream &ss)`
+    does not accept some unicode escape sequences less than 0xFFFF. This leads into
+    memory exposure of stack. 
