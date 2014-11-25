@@ -36,7 +36,7 @@
 
 \section{Introduction}
 
-Short intro.
+FileZilla is a free, cross-platform FTP application software for multiple platforms. The source code is open and licenced as GNU GPLv2. The most recent stable version as of now is 3.9.0.6, which was used for the purposes of all below-mentioned analyses. We inspected the client-side application, compiled either on windows (for \textit{CppCheck} and \textit{PreFast} analysers) or linux (for \textit{Valgrind} analysis).
 
 \section{Static analysis using CPPcheck}
 
@@ -61,7 +61,7 @@ The inspected run consisted of just opening the program and correctly closing it
 \noindent
 The blocks still reachable at exit are of little interest to us, since the optimization strategy of GTK is to leave some object allocated for cleanup during program termination. However, those 91.7 kiB of (possibly or indirectly) lost data should not be there. It may be (at least partly) due to leaks in supporting libraries (mainly GTK). Furthermore, this is only a result for plain opening and closing of the program -- with more interaction the number of leaks may rise.
 
-\section{Code inspection with regards to password processing}
+\section{Issues regarding password processing}
 
 Contents to be added.
 
