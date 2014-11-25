@@ -1,0 +1,14 @@
+valgrind --leak-check=full --suppressions=../../GNOME.supp/base.supp --suppressions=../../GNOME.supp/gail.supp --suppressions=../../GNOME.supp/glib.supp --suppressions=../../GNOME.supp/fontconfig.supp --suppressions=../../GNOME.supp/gio.supp --suppressions=../../GNOME.supp/gtksourceview.supp --suppressions=../../GNOME.supp/gdk.supp --suppressions=../../GNOME.supp/glibc.supp --suppressions=../../GNOME.supp/gtk3.supp --suppressions=../../GNOME.supp/gtk.supp --suppressions=../../GNOME.supp/pango.supp 1>valgrind-supp.txt 2>&1 filezilla
+
+8x Gtk-CRITICAL error: gtk_widget_set_size_request with negative dimensions
+
+using wxWidgets -> wxGTK on fedora 20
+-> all leaks in gtk shared libraries, after suppressing the traditional leaks
+==15774==    definitely lost: 6,688 bytes in 22 blocks
+==15774==    indirectly lost: 34,136 bytes in 1,454 blocks
+==15774==      possibly lost: 53,183 bytes in 811 blocks
+==15774==    still reachable: 2,497,812 bytes in 24,060 blocks
+==15774==         suppressed: 13,723 bytes in 133 blocks
+
+not interested in reachable, since the optimization strategy of GTK is to leave some object allocated for cleanup during program termination.
+-> those 7kB + 34 kB + ~53 kB lost however still wrong

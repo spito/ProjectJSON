@@ -40,22 +40,33 @@ Short intro.
 
 \section{Static analysis using CPPcheck}
 
-Contetns to be added.
+Contents to be added.
 
 \section{Static analysis using PreFast}
 
-Contetns to be added.
+Contents to be added.
 
 \section{Dynamic analysis using Valgrind}
 
-Contetns to be added.
+Running Filezilla with Valgrind \textit{memcheck} tool resulted in several leaks in the program. We inspected a GNOME version of the software, thus we emplyed some common suppression patters to try to exclude leaks caused by external libraries. The suppression files used can be obtained from \url{https://github.com/dtrebbien/GNOME.supp}.
+
+The inspected run consisted of just opening the program and correctly closing it again (\textit{File > Exit}). This resulted in:
+\begin{itemize}[topsep=0pt, itemsep=0pt]
+\item 6.5 kiB of definitely lost bytes,
+\item 33.3 kiB of indirectly lost bytes,
+\item 51.9 kiB of possibly lost bytes,
+\item 2.4 MiB of bytes still reachable at exit and
+\item 13.4 kiB of suppressed bytes.
+\end{itemize}
+\noindent
+The blocks still reachable at exit are of little interest to us, since the optimization strategy of GTK is to leave some object allocated for cleanup during program termination. However, those 91.7 kiB of (possibly or indirectly) lost data should not be there. It may be (at least partly) due to leaks in supporting libraries (mainly GTK). Furthermore, this is only a result for plain opening and closing of the program -- with more interaction the number of leaks may rise.
 
 \section{Code inspection with regards to password processing}
 
-Contetns to be added.
+Contents to be added.
 
 \section{Conclusions}
 
-Contetns to be added.
+Contents to be added.
 
 \end{document}
