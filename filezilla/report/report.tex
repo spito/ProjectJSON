@@ -39,16 +39,33 @@
 FileZilla is a free, cross-platform FTP application software for multiple platforms. The source code is open and licenced as GNU GPLv2. The most recent stable version as of now is 3.9.0.6, which was used for the purposes of all below-mentioned analyses. We inspected the client-side application, compiled either on windows (for \textit{CppCheck} and \textit{PreFast} analysers) or linux (for \textit{Valgrind} analysis).
 
 \section{Static analysis using CPPcheck}
+Static analysis of FileZilla using CPP check reported the following issues.
+\begin{itemize}[topsep=0pt, itemsep=0pt]
+ \item In tinyxml, array index used before limits check: for(int i=0; p[i] \&\& i< *length; ++i) and Copy contructor is written as TiXmlHandle operator=() instead of TiXmlHandle \&operator=() 
+ \item Expression is always false because `else if' condition matches previous condition(FlasePositive). if(c==0) ...; elseif(...|| (c=<expr2>)) ... elseif(c==0)...; 
+ \item 134 style issues for reducing the scope of the 62 variables  and for 72 C-style pointer casting 
+ \item 9 Portability issues for reading integers using scanf without field limit(crashes in libc older than 2.13-25). False positives, as the input was read from fixed sized buffer using sscanf.
+\end{itemize}
 
-Contents to be added.
 
 \section{Static analysis using PreFast}
-
-Contents to be added.
+Static analysis using PreFast requires the filezilla to be compiled using Visual studio. Filezilla-3.9.0.6 depends on gnutls-3.3.9-w32, wxWidgets-3.0.0, sqlite-amalgamation-3080702 for compiling. Projectproperty file \textit{Dependencies.props} is required to be created for defining the user macros, which gives information about the path to the dependent include files and libraries to link. Microsoft Visual studio solution, which comes with the filezilla is used to compile the filezilla.
+Prefast reported the following issues
+\begin{itemize}[topsep=0pt, itemsep=0pt]
+ \item Read Overrun or Write Overrun: difficult to understand, requires indepth understanding.
+ \item Dereferencing to null pointer: 
+	\begin{itemize}[topsep=0pt, itemsep=0pt]
+		\item Before dereferencing there is an assert function call, so these are false positives
+		\item Dereferencing a pointer value returned from iterator
+		\item A function is called with a pointer variable as a parameter, if parameter is null then the function returns null. The return value from function is checked and if it is not null, the pointer variable is accessed. False positive reported by Prefast that the pointer variable could be NULL.
+	\end{itemize}
+ \item Using uninitialized memory: Only in Platform dependent code (windows \#ifdef \_\_WXMSW\_\_).
+ \item Return value ignored: function calls are annotated with \_Check\_return but alternate mechanism is used for checking i.e., checking the output parameters 
+\end{itemize}
 
 \section{Dynamic analysis using Valgrind}
 
-Running Filezilla with Valgrind \textit{memcheck} tool resulted in several leaks in the program. We inspected a GNOME version of the software, thus we emplyed some common suppression patters to try to exclude leaks caused by external libraries. The suppression files used can be obtained from \url{https://github.com/dtrebbien/GNOME.supp}.
+Running Filezilla with Valgrind \textit{memcheck} tool resulted in several leaks in the program. We inspected a GNOME version of the software, thus we employed some common suppression patters to try to exclude leaks caused by external libraries. The suppression files used can be obtained from \url{https://github.com/dtrebbien/GNOME.supp}.
 
 The inspected run consisted of just opening the program and correctly closing it again (\textit{File > Exit}). This resulted in:
 \begin{itemize}[topsep=0pt, itemsep=0pt]
