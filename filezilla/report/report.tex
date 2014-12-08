@@ -63,7 +63,7 @@ Static analysis using \textit{PreFast} requires the FileZilla to be compiled usi
 
 \section{Dynamic analysis using Valgrind}
 
-Running Filezilla with Valgrind \textit{memcheck} tool resulted in several leaks in the program. We inspected a GNOME version of the software, thus we employed some common suppression patters to try to exclude leaks caused by external libraries. The suppression files used can be obtained from \url{https://github.com/dtrebbien/GNOME.supp}.
+Running FileZilla with Valgrind \textit{memcheck} tool resulted in several leaks in the program. We inspected a GNOME version of the software, thus we employed some common suppression patters to try to exclude leaks caused by external libraries. The suppression files used can be obtained from \url{https://github.com/dtrebbien/GNOME.supp}.
 
 The inspected run consisted of just opening the program and correctly closing it again (\textit{File > Exit}). This resulted in:
 \begin{itemize}[topsep=0pt, itemsep=0pt]
@@ -78,7 +78,9 @@ The blocks still reachable at exit are of little interest to us, since the optim
 
 \section{Issues regarding password processing}
 
-Contents to be added.
+From version 3 onwards, FileZilla saves all stored usernames and passwords in an unencrypted form in the file \textit{sitemanager.xml}. The file is located in application's configuration folder in user's profile. In GUI, nothing indicates plain storage (the password is hidden by bullets). Although a bit unorthodox solution, showing the password in clean in GUI would more properly reflect the real storage type.
+
+When connecting to servers not explicitely saved, the application asks, if it should save passwords for convenience of the future use. This, again, results in plain storage in a similar location. The choice in the mentioned dialog window is applied as a global setting to (not) save passwords (except of those explicitely input in the site manager).
 
 \section{Conclusions}
 
