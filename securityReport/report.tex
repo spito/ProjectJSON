@@ -42,7 +42,7 @@ We analyzed a JSON parser written in C++ by Vít Šesták and Daniil Leksin. Acc
 
 Microsoft \textit{PreFast} reports no issues and \textit{CppCheck} has found just a single (but meaningful) style issue: exceptions should be caught by reference, not by value.
 
-Analysis by Valgrind to be added.
+Valgrind reports no memory issues on multiple JSON inputs tested.
 
 \section{Manual code inspection}
 
@@ -53,15 +53,17 @@ Manual testing and code ispection discovered the following issues:
 \item The parser is not able to handle unfinished strings correctly. For instance, the insput string \texttt{"} (single double-quote character) causes the parser to crash with segmentation fault.
 \item The parser accepts characters inside string in range 0x00--0x1F, which it should refuse. These characters should be encoded in Unicode escape sequence.
 \item The parser is not capable of accepting valid Unicode escape sequences of characters larger than 0xFFFF (e.g.\ \texttt{"\textbackslash{}uD852\textbackslash{}uDF62"}). However, such inputs cause no memory corruption or parsing problems.
-\item The parser is not capable of accepting valid Unicode escape sequence of some characters less than 0xFFFF. For example, using the Euro sign on the input (\texttt{"\textbackslash{}u20ac"}) causes a problem in the code due to exposition of a small area of memory on the stack.
+\item The parser is not capable of accepting valid Unicode escape sequence of some characters less than 0xFFFF. For example, using the Euro sign on the input (\texttt{"\textbackslash{}u20ac"}) causes a problem in the code. The stack is not exposed, only UTF-8 characters higher than 127 are badly flushed.
+\item There is a memory leak every time a non-empty JSON array or JSON object is parsed, since the \texttt{Json::Value} object does not define virtual destructor.
 \end{itemize}
 
 \section{Conclusions}
 
-The automated analysis did not find any major flaws. Manual inspection revealed several issues, bringing into attention the following two major problems:
+The automated analysis did not find any major flaws. Manual inspection revealed several issues, bringing into attention the following three major problems:
 \begin{itemize}[itemsep=0pt]
 \item The function \texttt{shared\_ptr<Json::String> Json::String::readStringFrom(istream \&in)} does not return any value if the ending quotation mark is not reached. This results into uninitialized \texttt{std::shared\_ptr< Json::String >} and therefore a segmentation fault.
 \item The function \texttt{void Json::String::parseHexaStringSequence(istream \&in,stringstream \&ss)} does not accept some Unicode escape sequences less than 0xFFFF. This leads into small stack memory exposure.
+\item The \texttt{Json::Value} object does not define virtual destructor.
 \end{itemize}
 
 \end{document}
