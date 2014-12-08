@@ -80,13 +80,13 @@ The blocks still reachable at exit are of little interest to us, since the optim
 
 From version 3 onward, FileZilla saves all stored usernames and passwords in an unencrypted form in the file \textit{sitemanager.xml}. The file is located in application's configuration folder in user's profile. In GUI, nothing indicates plain storage (the password is hidden by bullets). Although a bit unorthodox solution, showing the password in clean in GUI would more properly reflect the real storage type.
 
-When connecting to servers not explicitly saved, the application asks, if it should save passwords for convenience of the future use. This, again, results in plain storage in a similar location. The choice in the mentioned dialog window is applied as a global setting to (not) save passwords (except of those explicitly input in the site manager).
+When connecting to servers not explicitly saved, the application asks once, if it should save passwords for convenience of the future use. This, if agreed on, again results in plain storage in a similar location. The choice in the mentioned dialog window is applied as a global setting to (not) save passwords (except those explicitly input in the site manager).
 
 \section{Conclusions}
 
 The static and dynamic analysis tools did not find any severe flaws in FileZilla. This was expected, as it is a well-established software with some active developers (most recent commit within the last month). There were, however, some less important style and memory issues. The underlying libraries are also not bug-free and don't use the memory properly.
 
-There is also an important issue with plaintext password storage. However, there's no simple and correct solution here -- it's a part of a wider discussion of offline password management having pros and cons on both sides.
+There is an important issue with plaintext password storage. However, there's no simple and correct solution here -- it's a part of a wider discussion concerning offline password management having pros and cons on both sides.
 
 No issues were reported back to the developer, since all found were of low severity and either already known (password storage), too vague without in-depth analysis (read overrun, lost bytes) or debatable (style issues).
 
