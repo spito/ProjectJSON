@@ -52,7 +52,7 @@ Manual testing and code ispection revealed the following issues:
 \item The parser accepts some string characters inside the range 0x00--0x1F which should be refused. These characters should be encoded in Unicode escape sequence.
 \item The parser is not capable of accepting valid Unicode escape sequences of characters larger than 0xFFFF (e.g.\ \texttt{"\textbackslash{}uD852\textbackslash{}uDF62"}). However, such inputs cause no memory corruption or parsing problems.
 \item The parser is not capable of accepting valid Unicode escape sequence of some characters less than 0xFFFF. For example, using the Euro sign on the input (\texttt{"\textbackslash{}u20ac"}) causes a problem in the code. The stack is not exposed, only UTF-8 characters higher than 127 are badly flushed.
-\item There is a memory leak every time a non-empty JSON array or JSON object is parsed, since the \texttt{Json::Value} object does not define virtual destructor.
+\item The \texttt{Json::Value} object does not define a virtual destructor. Even though this does not lead to a memory leak in this case, that is only due to a (somewhat improper) usage of \texttt{std::shared\_ptr}.
 \end{itemize}
 
 \section{Conclusions}
@@ -60,8 +60,8 @@ Manual testing and code ispection revealed the following issues:
 The automated analysis did not find any major flaws. Manual inspection revealed several issues, bringing into attention the following three major problems:
 \begin{itemize}[itemsep=0pt]
 \item The function \texttt{shared\_ptr<Json::String> Json::String::readStringFrom(istream \&in)} does not return any value if the ending quotation mark is not reached. This results into uninitialized \texttt{std::shared\_ptr< Json::String >} and therefore a segmentation fault.
-\item The function \texttt{void Json::String::parseHexaStringSequence(istream \&in,stringstream \&ss)} does not accept some Unicode escape sequences less than 0xFFFF. This leads into small stack memory exposure.
-\item The \texttt{Json::Value} object does not define virtual destructor.
+\item The function \texttt{void Json::String::parseHexaStringSequence(istream \&in,stringstream \&ss)} does not accept some Unicode escape sequences less than 0xFFFF. Such characters are flushed incorrectly.
+\item The \texttt{Json::Value} object should define a virtual destructor.
 \end{itemize}
 
 \end{document}
