@@ -30,3 +30,6 @@ jParserTest
 # temporaries
 *.swp
 *.user
+*.aux
+*.out
+*.gz
